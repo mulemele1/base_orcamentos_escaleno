@@ -1,0 +1,28 @@
+* text=auto
+
+*.blade.php diff=html
+*.css diff=css
+*.html diff=html
+*.md diff=markdown
+*.php diff=php
+
+/.github export-ignore
+CHANGELOG.md export-ignore
+
+
+# Configuração recomendada para projetos web/PHP/Laravel
+* text=auto eol=lf
+
+# Arquivos que devem sempre usar CRLF (ex: .bat, .cmd no Windows)
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Arquivos binários (não mexer em line endings)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.rar binary
+*.pdf binary
