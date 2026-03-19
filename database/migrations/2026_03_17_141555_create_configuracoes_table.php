@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('configuracoes', function (Blueprint $table) {
             $table->id();
             
-            $table->string('chave')->unique(); // iva, contingencia
-            $table->string('nome');
-            $table->decimal('valor', 5, 2); // 16.00, 8.00
-            $table->string('tipo'); // percentual, valor_fixo
+            $table->string('chave')->unique(); // iva, contingencia, sistema_nome, etc.
+            $table->string('nome'); // Nome exibido no formulário
+            $table->string('grupo')->default('Geral'); // Grupo para agrupamento na interface (NOVO CAMPO)
+            $table->string('valor')->nullable(); // Alterado para string para aceitar textos, números, booleanos
+            $table->string('tipo')->default('text'); // text, number, textarea, boolean, percentual, valor_fixo
             $table->text('descricao')->nullable();
             
             $table->timestamps();

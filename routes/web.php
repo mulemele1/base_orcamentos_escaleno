@@ -24,7 +24,10 @@ use App\Http\Controllers\{
     GestaoController,
     PdfController,
 
-    
+    ComposicaoCustoController,
+    SubatividadeController,
+    AtividadeController,
+    ConfiguracaoController,
     GerenciaController,
     RequisicaocispoController,
     DashboarduserController,
@@ -197,6 +200,48 @@ Route::prefix('pdf')->name('pdf.')->middleware(['auth'])->group(function () {
     Route::get('/summary', [PdfController::class, 'summary'])->name('summary');
     Route::get('/categoria/{id}', [PdfController::class, 'categoria'])->name('categoria');
     Route::get('/item/{id}', [PdfController::class, 'item'])->name('item');
+});
+
+// CONFIGURAÇAO
+Route::prefix('configuracoes')->name('configuracoes.')->group(function () {
+    Route::get('/', [ConfiguracaoController::class, 'index'])->name('index');
+    Route::get('/index', [ConfiguracaoController::class, 'index'])->name('index.alt'); // ROTA ADICIONADA
+    Route::post('/update', [ConfiguracaoController::class, 'update'])->name('update');
+});
+
+
+// ATIVIDADES
+Route::prefix('atividades')->name('atividades.')->group(function () {
+    Route::get('/list', [AtividadeController::class, 'index'])->name('index');
+    Route::get('/create', [AtividadeController::class, 'create'])->name('create');
+    Route::post('/store', [AtividadeController::class, 'store'])->name('store');
+    Route::get('/{atividade}/edit', [AtividadeController::class, 'edit'])->name('edit');
+    Route::put('/{atividade}', [AtividadeController::class, 'update'])->name('update');
+    Route::delete('/{atividade}', [AtividadeController::class, 'destroy'])->name('destroy');
+    Route::get('/{atividade}', [AtividadeController::class, 'show'])->name('show');
+});
+
+// SUBATIVIDADES (ITENS)
+Route::prefix('subatividades')->name('subatividades.')->group(function () {
+    Route::get('/list', [SubatividadeController::class, 'index'])->name('index');
+    Route::get('/create', [SubatividadeController::class, 'create'])->name('create');
+    Route::post('/store', [SubatividadeController::class, 'store'])->name('store');
+    Route::post('/calcular', [SubatividadeController::class, 'calcular'])->name('calcular'); // AJAX
+    Route::get('/{subatividade}/edit', [SubatividadeController::class, 'edit'])->name('edit');
+    Route::put('/{subatividade}', [SubatividadeController::class, 'update'])->name('update');
+    Route::delete('/{subatividade}', [SubatividadeController::class, 'destroy'])->name('destroy');
+    Route::get('/{subatividade}', [SubatividadeController::class, 'show'])->name('show');
+});
+
+// COMPOSIÇÃO DE CUSTOS (MATERIAIS)
+Route::prefix('composicoes')->name('composicoes.')->group(function () {
+    Route::get('/list', [ComposicaoCustoController::class, 'index'])->name('index');
+    Route::get('/create', [ComposicaoCustoController::class, 'create'])->name('create');
+    Route::post('/store', [ComposicaoCustoController::class, 'store'])->name('store');
+    Route::get('/material/{id}', [ComposicaoCustoController::class, 'getMaterialData'])->name('material-data'); // AJAX
+    Route::get('/{composicao}/edit', [ComposicaoCustoController::class, 'edit'])->name('edit');
+    Route::put('/{composicao}', [ComposicaoCustoController::class, 'update'])->name('update');
+    Route::delete('/{composicao}', [ComposicaoCustoController::class, 'destroy'])->name('destroy');
 });
 
     // PREÇOS

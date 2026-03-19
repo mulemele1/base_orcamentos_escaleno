@@ -350,38 +350,33 @@ return [
                     'url'  => 'itens-orcamento/list',
                     'can'  => 'is_admin',
                 ], 
+                
                 [
-                    'text' => 'Suma',
-                    'icon' => 'fas fa-fw fa-credit-card', // Ícone alterado para representar transação
-                    'url'  => 'summary',
-                    'can'  => 'is_admin',
-                ],
-                /*[
-                    'text' => 'Desembolso à CISPOC',
-                    'icon' => 'fas fa-fw fa-credit-card', // Ícone alterado para representar transação
-                    'url'  => 'desembolsos/list',
+                    'text' => 'Configuração',
+                    'icon' => 'fas fa-fw fa-credit-card',
+                    'url'  => 'configuracoes/index',
                     'can'  => 'is_admin',
                 ], 
                 [
-                    'text' => 'Distribuição',
+                    'text' => 'Actividades',
                     'icon' => 'fas fa-fw fa-money-bill',
-                    'url'  => 'distribuicaos/list',
+                    'url'  => 'atividades/list',
                     'can'  => 'is_admin',
                 ], 
                 [
-                    'text' => 'Requisição Recepção',
-                    'icon' => 'fas fa-fw fa-file', // Alterado para ícone de documento
-                    'url'  => 'requisicaos/list',
+                    'text' => 'Subatividades',
+                    'icon' => 'fas fa-fw fa-file', 
+                    'url'  => 'subatividades/list',
                     'can'  => 'is_user',
                 ], 
                 [
-                    'text' => 'Requisição CISPOC',
-                    'icon' => 'fas fa-fw fa-file', // Alterado para ícone de documento
-                    'url'  => 'requisicaocispos/list',
+                    'text' => 'Composição de Custos',
+                    'icon' => 'fas fa-fw fa-file', 
+                    'url'  => 'composicoes/list',
                     'can'  => 'is_admin',
                 ], 
                 
-                [
+                /*[
                     'text' => 'Despesas',
                     'icon' => 'fas fa-fw fa-money-bill',
                     'url'  => 'dispensas/list',
@@ -395,21 +390,16 @@ return [
             'can'  => 'is_admin',
             'submenu' => [
                 [
-                    'text' => 'Projecto',
+                    'text' => 'Geral',
                     'icon' => 'fas fa-fw fa-window-restore',
                     'submenu' => [
+                        
                         [
-                            //'text' => 'Por Local', // TINHA => ANUAL
-                            'text' => 'Por Projecto',
-                            'url'  => 'relatorios/projecto/ano',
-                            'icon' => 'fas fa-fw fa-calendar',
-                        ],
-                        [
-                            //'text' => 'Por Projecto', // TINHA => TODOS PROJECTOS
-                            'text' => 'Por Obra',
-                            'url'  => 'relatorios/projecto/anos',
-                            'icon' => 'fas fa-fw fa-calendar',
-                        ],
+                    'text' => 'Projectos',
+                    'icon' => 'fas fa-fw fa-calendar', 
+                    'url'  => 'summary',
+                    'can'  => 'is_admin',
+                ],
                     ],
                 ],
                 /*[

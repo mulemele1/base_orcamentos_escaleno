@@ -12,43 +12,48 @@ class SummaryController extends Controller
      * Display the summary of all budget items.
      */
     public function index()
-    {
-        $categorias = CategoriaObra::with('itens')
-            ->orderBy('ordem')
-            ->orderBy('codigo')
-            ->get();
+{
+    $categorias = CategoriaObra::with('itens')
+        ->orderBy('ordem')
+        ->orderBy('codigo')
+        ->get();
 
-        $subtotais = [];
-        $totalGeral = 0;
+    $subtotais = [];
+    $totalGeral = 0;
 
-        foreach ($categorias as $categoria) {
-            $subtotal = $categoria->itens->sum('total');
-            $subtotais[$categoria->id] = $subtotal;
-            $totalGeral += $subtotal;
-        }
-
-        $iva = Configuracao::getValor('iva', 16);
-        $contingencia = Configuracao::getValor('contingencia', 8);
-
-        $subTotalA = $totalGeral;
-        $valorIva = $subTotalA * ($iva / 100);
-        $subTotalB = $subTotalA + $valorIva;
-        $valorContingencias = $subTotalB * ($contingencia / 100);
-        $grandTotal = $subTotalB + $valorContingencias;
-
-        return view('summary.index', compact(
-            'categorias',
-            'subtotais',
-            'totalGeral',
-            'iva',
-            'contingencia',
-            'subTotalA',
-            'valorIva',
-            'subTotalB',
-            'valorContingencias',
-            'grandTotal'
-        ));
+    foreach ($categorias as $categoria) {
+        $subtotal = $categoria->itens->sum('total');
+        $subtotais[$categoria->id] = $subtotal;
+        $totalGeral += $subtotal;
     }
+
+    // 🔥 CORREÇÃO: Usar o método get() em vez de getValor()
+    $iva = Configuracao::get('iva') ?? 16;
+    $contingencia = Configuracao::get('contingencia') ?? 8;
+
+    // Converter para número (float) se necessário
+    $iva = floatval($iva);
+    $contingencia = floatval($contingencia);
+
+    $subTotalA = $totalGeral;
+    $valorIva = $subTotalA * ($iva / 100);
+    $subTotalB = $subTotalA + $valorIva;
+    $valorContingencias = $subTotalB * ($contingencia / 100);
+    $grandTotal = $subTotalB + $valorContingencias;
+
+    return view('summary.index', compact(
+        'categorias',
+        'subtotais',
+        'totalGeral',
+        'iva',
+        'contingencia',
+        'subTotalA',
+        'valorIva',
+        'subTotalB',
+        'valorContingencias',
+        'grandTotal'
+    ));
+}
 
     /**
      * Export summary to PDF (opcional)

@@ -9,31 +9,36 @@ class Configuracao extends Model
 {
     use HasFactory;
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'configuracoes'; // <-- ADICIONE ESTA LINHA
-
+    protected $table = 'configuracoes';
+    
     protected $fillable = [
         'chave',
         'nome',
+        'grupo',
         'valor',
         'tipo',
         'descricao'
     ];
 
+    // Remova o casting ou ajuste conforme necessário
     protected $casts = [
-        'valor' => 'decimal:2'
+        // Não faça casting para decimal se o campo pode ter texto
+        // 'valor' => 'decimal:2', // REMOVA ISSO SE EXISTIR
     ];
 
-    /**
-     * Buscar configuração por chave
-     */
-    public static function getValor($chave, $default = 0)
+    public static function get($chave, $default = null)
     {
         $config = self::where('chave', $chave)->first();
         return $config ? $config->valor : $default;
+    }
+
+    public static function set($chave, $valor)
+    {
+        $config = self::where('chave', $chave)->first();
+        if ($config) {
+            $config->valor = $valor;
+            $config->save();
+        }
+        return $config;
     }
 }
