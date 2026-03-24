@@ -21,8 +21,7 @@
                         <h3 class="card-title">Lista de Atividades</h3>
                     </div>
                     <div class="col-md-6">
-                        <!-- FILTRO COM AUTO-SUBMIT -->
-                        <form method="GET" action="{{ route('atividades.index') }}" class="form-inline justify-content-end" id="filtroForm">
+                        <form method="GET" action="{{ route('atividades.index') }}" class="form-inline justify-content-end">
                             <div class="form-group mr-2">
                                 <select name="categoria_id" class="form-control" id="categoriaSelect" style="min-width: 250px;">
                                     <option value="">Todas as Categorias</option>
@@ -34,11 +33,6 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <noscript>
-                                <button type="submit" class="btn btn-primary mr-2">
-                                    <i class="fas fa-filter"></i> Filtrar
-                                </button>
-                            </noscript>
                             @if(request('categoria_id'))
                                 <a href="{{ route('atividades.index') }}" class="btn btn-secondary">
                                     <i class="fas fa-times"></i> Limpar
@@ -52,7 +46,7 @@
             <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
                     <thead>
-                        <tr>
+                        60d
                             <th width="80">Código</th>
                             <th>Nome da Atividade</th>
                             <th width="100">Unidade</th>
@@ -61,11 +55,10 @@
                             <th width="120">Subatividades</th>
                             <th width="80">Ordem</th>
                             <th width="250">Ações</th>
-                        </tr>
-                    </thead>
+                        </thead>
                     <tbody>
                         @forelse($atividades as $atividade)
-                        <tr>
+                        2d
                             <td><span class="badge bg-primary">{{ $atividade->codigo }}</span></td>
                             <td>{{ $atividade->nome }}</td>
                             <td>{{ $atividade->unidade ?: 'Vg' }}</td>
@@ -102,7 +95,7 @@
                                     </a>
                                     <button type="button" 
                                             class="btn btn-sm btn-danger" 
-                                            onclick="confirmDelete({{ $atividade->id }}, '{{ $atividade->nome }}')"
+                                            onclick="confirmDelete({{ $atividade->id }}, '{{ addslashes($atividade->nome) }}')"
                                             title="Excluir">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -155,27 +148,13 @@ function confirmDelete(id, nome) {
 
 // FILTRO AUTOMÁTICO AO SELECIONAR
 document.getElementById('categoriaSelect').addEventListener('change', function() {
+    const url = new URL(window.location.href);
     if (this.value) {
-        // Se selecionou uma categoria, redireciona com o parâmetro
-        window.location.href = "{{ route('atividades.index') }}?categoria_id=" + this.value;
+        url.searchParams.set('categoria_id', this.value);
     } else {
-        // Se selecionou "Todas as Categorias", redireciona sem parâmetro
-        window.location.href = "{{ route('atividades.index') }}";
+        url.searchParams.delete('categoria_id');
     }
-});
-
-// Opcional: Mostrar indicador de carregamento
-document.getElementById('categoriaSelect').addEventListener('change', function() {
-    // Adiciona um pequeno delay para não parecer travado
-    this.style.opacity = '0.5';
-    this.disabled = true;
+    window.location.href = url.toString();
 });
 </script>
-
-<style>
-/* Estilo para feedback visual */
-#categoriaSelect:disabled {
-    cursor: wait;
-}
-</style>
 @stop

@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'Sistema de Compensações',
+    'title' => 'Sistema de Gestão de Obras',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -45,12 +45,12 @@ return [
     |
     */
 
-    'logo' => '<b>Sis - </b>Comp',
-    'logo_img' => 'vendor/adminlte/dist/img/ins03.png',
+    'logo' => '<b>Gestão - </b>Obras',
+    'logo_img' => 'vendor/adminlte/dist/img/BRANCO_GRADIENTE.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'SisComp',
+    'logo_img_alt' => 'Gestão de Obras',
 
     /*
     |--------------------------------------------------------------------------
@@ -226,30 +226,47 @@ return [
 
 
     'menu' => [
+    // ============================================
+    // DASHBOARD PRINCIPAL
+    // ============================================
+    [
+        'text' => 'DASHBOARD',
+        'url'  => 'home',
+        'icon' => 'fas fa-fw fa-chart-pie',
+        'can'  => 'is_user',
+    ],
 
-        // Sidebar items:
-        [
-            'text' => 'DASHBOARD',
-            'url'  => 'home',
-            'icon' => 'fas fa-fw fa-chalkboard',
-        ],
-        [
-            'text' => 'CADASTROS',
-            'icon' => 'fas fa-fw fa-keyboard',
-            'can'  => 'is_user',
-            'submenu' => [
-                               
-                
-            // MÓDULO CADASTROS BÁSICOS
-            [
+    // ============================================
+    // CADASTROS BÁSICOS
+    // ============================================
+    [
+        'text' => 'CADASTROS',
+        'icon' => 'fas fa-fw fa-database',
+        'can'  => 'is_user',
+        'submenu' => [
+            
+             [
+                'text' => 'Projetos',
+                'icon' => 'fas fa-fw fa-building',
+                'url'  => 'projetos',
+                'can'  => 'is_admin',
+            ],
+            
+            /*[
                 'text' => 'Clientes',
-                'icon' => 'fas fa-fw fa-users',
+                'icon' => 'fas fa-fw fa-user-tie',
                 'url'  => 'clientes/list',
+                'can'  => 'is_admin',
+            ],*/
+            [
+                'text' => 'Categorias',
+                'icon' => 'fas fa-fw fa-truck-loading',
+                'url'  => 'categorias-obra/list',
                 'can'  => 'is_admin',
             ],
             [
                 'text' => 'Fornecedores',
-                'icon' => 'fas fa-fw fa-truck',
+                'icon' => 'fas fa-fw fa-user-secret',
                 'url'  => 'fornecedores/list',
                 'can'  => 'is_admin',
             ],
@@ -260,11 +277,175 @@ return [
                 'can'  => 'is_admin',
             ],
             
-           /* // MÓDULO BASE DE PREÇOS
+            /*[
+                'text' => 'Participantes',
+                'icon' => 'fas fa-fw fa-users-cog',
+                'url'  => 'participantes/list',
+                'can'  => 'is_user',
+            ],
+            
             [
-                'text' => 'Preços',
-                'icon' => 'fas fa-fw fa-dollar-sign',
-                'url'  => 'precos/list',
+                'text' => 'Recepção',
+                'icon' => 'fas fa-fw fa-headset',
+                'url'  => 'recepcaos/list',
+                'can'  => 'is_admin',
+            ],
+            [
+                'text' => 'Gestão',
+                'icon' => 'fas fa-fw fa-chart-line',
+                'url'  => 'gestaos/list',
+                'can'  => 'is_admin',
+            ],
+            [
+                'text' => 'Gerência',
+                'icon' => 'fas fa-fw fa-tasks',
+                'url'  => 'gerencias/list',
+                'can'  => 'is_admin',
+            ],
+            [
+                'text' => 'Fontes',
+                'icon' => 'fas fa-fw fa-water',
+                'url'  => 'fontes/list',
+                'can'  => 'is_admin',
+            ],*/
+        ],
+    ],
+
+    // ============================================
+    // ORÇAMENTOS E OPERAÇÕES
+    // ============================================
+    [
+        'text' => 'ORÇAMENTOS',
+        'icon' => 'fas fa-fw fa-calculator',
+        'can'  => 'is_user',
+        'submenu' => [
+            [
+                'text' => 'Itens do Orçamento',
+                'icon' => 'fas fa-fw fa-file-invoice-dollar',
+                'url'  => 'itens-orcamento/list',
+                'can'  => 'is_admin',
+            ],
+            [
+                'text' => 'Atividades',
+                'icon' => 'fas fa-fw fa-clipboard-list',
+                'url'  => 'atividades/list',
+                'can'  => 'is_admin',
+            ],
+            [
+                'text' => 'Subatividades',
+                'icon' => 'fas fa-fw fa-list-ul',
+                'url'  => 'subatividades/list',
+                'can'  => 'is_user',
+            ],
+            [
+                'text' => 'Composição de Custos',
+                'icon' => 'fas fa-fw fa-cogs',
+                'url'  => 'composicoes/list',
+                'can'  => 'is_admin',
+            ],
+            [
+                'text' => 'Orçamentos',
+                'icon' => 'fas fa-fw fa-file-invoice-dollar',
+                'url'  => 'orcamentos',
+                'can'  => 'is_admin',
+            ],
+            /*[
+                'text' => 'Resumo',
+                'icon' => 'fas fa-fw fa-chart-simple',
+                'url'  => 'summary',
+                'can'  => 'is_admin',
+            ],*/
+        ],
+    ],
+
+    // ============================================
+    // RELATÓRIOS E ANÁLISES
+    // ============================================
+    [
+        'text' => 'RELATÓRIOS',
+        'icon' => 'fas fa-fw fa-chart-bar',
+        'can'  => 'is_admin',
+        'submenu' => [
+            [
+                'text' => 'Relatório Geral',
+                'icon' => 'fas fa-fw fa-chart-pie',
+                'url'  => 'summary',
+                'can'  => 'is_admin',
+            ],
+            /*[
+                'text' => 'Relatórios DAF',
+                'icon' => 'fas fa-fw fa-file-invoice',
+                'submenu' => [
+                    [
+                        'text' => 'Por Projeto',
+                        'url'  => 'relatorios/fontedaf/ano',
+                        'icon' => 'fas fa-fw fa-calendar-alt',
+                    ],
+                    [
+                        'text' => 'Por Local',
+                        'url'  => 'relatorios/fontedaf/anos',
+                        'icon' => 'fas fa-fw fa-map-marker-alt',
+                    ],
+                ],
+            ],
+            [
+                'text' => 'Relatórios Secretaria',
+                'icon' => 'fas fa-fw fa-user-tie',
+                'submenu' => [
+                    [
+                        'text' => 'Por Projeto',
+                        'url'  => 'relatorios/administracao/ano',
+                        'icon' => 'fas fa-fw fa-calendar-alt',
+                    ],
+                    [
+                        'text' => 'Todos Projetos',
+                        'url'  => 'relatorios/administracao/anos',
+                        'icon' => 'fas fa-fw fa-folder-open',
+                    ],
+                ],
+            ],
+            [
+                'text' => 'Relatórios Recepção',
+                'icon' => 'fas fa-fw fa-concierge-bell',
+                'submenu' => [
+                    [
+                        'text' => 'Por Projeto',
+                        'url'  => 'relatorios/recepcao/anos',
+                        'icon' => 'fas fa-fw fa-calendar-alt',
+                    ],
+                    [
+                        'text' => 'Por Local',
+                        'url'  => 'relatorios/recepcao/ano',
+                        'icon' => 'fas fa-fw fa-map-marker-alt',
+                    ],
+                ],
+            ],
+            [
+                'text' => 'Relatórios Participantes',
+                'icon' => 'fas fa-fw fa-users',
+                'submenu' => [
+                    [
+                        'text' => 'Por Projeto',
+                        'url'  => 'relatorios/participanteDN/anoN',
+                        'icon' => 'fas fa-fw fa-calendar-alt',
+                    ],
+                ],
+            ],*/
+        ],
+    ],
+
+    // ============================================
+    // CONFIGURAÇÕES
+    // ============================================
+    [
+        'text' => 'CONFIGURAÇÕES',
+        'icon' => 'fas fa-fw fa-cog',
+        'can'  => 'is_admin',
+        'submenu' => [
+            [
+                'text' => 'Configurações',
+                'icon' => 'fas fa-fw fa-sliders-h',
+                'url'  => 'configuracoes/index',
                 'can'  => 'is_admin',
             ],
             [
@@ -273,212 +454,32 @@ return [
                 'url'  => 'precos/dashboard',
                 'can'  => 'is_admin',
             ],
-            
-            // MÓDULO ORÇAMENTOS
             [
-                'text' => 'Orçamentos',
-                'icon' => 'fas fa-fw fa-file-invoice',
-                'url'  => 'orcamentos/list',
+                'text' => 'Preços',
+                'icon' => 'fas fa-fw fa-tags',
+                'url'  => 'precos/list',
                 'can'  => 'is_admin',
             ],
-            [
-                'text' => 'Betão',
-                'icon' => 'fas fa-fw fa-calculator',
-                'url'  => 'betao/calcular',
-                'can'  => 'is_admin',
-            ],
-
-                [
-                    'text' => 'Fonte',
-                    'icon' => 'fas fa-fw fa-hospital',
-                    'url'  => 'fontes/list',
-                    'can'  => 'is_admin',
-                ], 
-                [
-                    'text' => 'Gestão',
-                    'url' => 'gestaos/list',
-                    'icon' => 'fas fa-fw fa-network-wired', // Ícone de gráfico para gestão
-                    'can' => 'is_admin',
-                ],
-                [
-                    'text' => 'Gerência',
-                    'url' => 'gerencias/list',
-                    'icon' => 'fas fa-fw fa-network-wired', // Ícone de tarefas para gerência
-                    'can' => 'is_admin',
-                ],
-                [
-                    'text' => 'Secretária',
-                    'icon' => 'fas fa-fw fa-users',
-                    'url'  => 'administracaos/list',
-                    'can'  => 'is_admin',
-                ], [
-                    'text' => 'Recepção',
-                    'icon' => 'fas fa-fw fa-users',
-                    'url'  => 'recepcaos/list',
-                    'can'  => 'is_admin',
-                ],  
-                [
-                    'text' => 'Projecto',
-                    'icon' => 'fas fa-fw fa-window-restore',
-                    'url'  => 'projectos/list',
-                    'can'  => 'is_admin',
-                ],
-                [
-                    'text' => 'Participante',
-                    'icon' => 'fas fa-fw fa-user',
-                    'url'  => 'participantes/list',
-                    'can'  => 'is_user'
-                ],*/
-                
-            ]
-        ],
-        [
-            'text' => 'OPERAÇÕES',
-            'icon' => 'fas fa-fw fa-code',
-            'can'  => 'is_user',
-            'submenu' => [
-                [
-                    'text' => 'Categorias',
-                    'icon' => 'fas fa-fw fa-file', // Alterado para ícone de documento
-                    'url'  => 'categorias-obra/list',
-                    'can'  => 'is_admin',
-                ],
-                
-                [
-                    'text' => 'Orcamentos',
-                    'icon' => 'fas fa-fw fa-credit-card',// Ícone alterado para representar transação
-                    'url'  => 'itens-orcamento/list',
-                    'can'  => 'is_admin',
-                ], 
-                
-                [
-                    'text' => 'Configuração',
-                    'icon' => 'fas fa-fw fa-credit-card',
-                    'url'  => 'configuracoes/index',
-                    'can'  => 'is_admin',
-                ], 
-                [
-                    'text' => 'Actividades',
-                    'icon' => 'fas fa-fw fa-money-bill',
-                    'url'  => 'atividades/list',
-                    'can'  => 'is_admin',
-                ], 
-                [
-                    'text' => 'Subatividades',
-                    'icon' => 'fas fa-fw fa-file', 
-                    'url'  => 'subatividades/list',
-                    'can'  => 'is_user',
-                ], 
-                [
-                    'text' => 'Composição de Custos',
-                    'icon' => 'fas fa-fw fa-file', 
-                    'url'  => 'composicoes/list',
-                    'can'  => 'is_admin',
-                ], 
-                
-                /*[
-                    'text' => 'Despesas',
-                    'icon' => 'fas fa-fw fa-money-bill',
-                    'url'  => 'dispensas/list',
-                    'can'  => 'is_user',
-                ],*/
-            ]
-        ],
-        [
-            'text' => 'RELATORIOS',
-            'icon' => 'fas fa-fw fa-chart-pie',
-            'can'  => 'is_admin',
-            'submenu' => [
-                [
-                    'text' => 'Geral',
-                    'icon' => 'fas fa-fw fa-window-restore',
-                    'submenu' => [
-                        
-                        [
-                    'text' => 'Projectos',
-                    'icon' => 'fas fa-fw fa-calendar', 
-                    'url'  => 'summary',
-                    'can'  => 'is_admin',
-                ],
-                    ],
-                ],
-                /*[
-                    'text' => 'DAF',
-                    'icon' => 'fas fa-fw fa-user',
-                    'submenu' => [
-                        [
-                            'text' => 'Por Projecto',
-                            'url'  => 'relatorios/fontedaf/ano',
-                            'icon' => 'fas fa-fw fa-calendar',
-                        ],
-                        
-                        [
-                            'text' => 'Por Local',
-                            'url'  => 'relatorios/fontedaf/anos',
-                            'icon' => 'fas fa-fw fa-calendar',
-                        ],
-                    ],
-                ],
-
-                [
-                    'text' => 'Secretária',
-                    'icon' => 'fas fa-fw fa-user',
-                    'submenu' => [
-                        [
-                            'text' => 'Por Projectos',
-                            'url'  => 'relatorios/administracao/ano',
-                            'icon' => 'fas fa-fw fa-calendar',
-                        ],
-                        [
-                            'text' => 'Todos os Projecto',
-                            'url'  => 'relatorios/administracao/anos',
-                            'icon' => 'fas fa-fw fa-calendar',
-                        ],
-                    ],
-                ],
-                [
-                    'text' => 'Recepção',
-                    'icon' => 'fas fa-fw fa-user',
-                    'submenu' => [
-                        
-                        [
-                            'text' => 'Por Projecto',
-                            'url'  => 'relatorios/recepcao/anos',
-                            'icon' => 'fas fa-fw fa-calendar',
-                        ],
-                        [
-                            'text' => 'Por Local',
-                            'url'  => 'relatorios/recepcao/ano',
-                            'icon' => 'fas fa-fw fa-calendar',
-                        ],
-                    ],
-                ],
-                
-                [
-                    'text' => 'Participante',
-                    'icon' => 'fas fa-fw fa-calendar',
-                    'submenu' => [
-                        [
-                            'text' => 'Por Projecto',
-                            'url'  => 'relatorios/participanteDN/anoN',
-                            'icon' => 'fas fa-fw fa-calendar',
-                        ],
-                        //[
-                        //   'text' => 'Por Local',
-                        //    'url'  => 'relatorios/participanteDV/anoV',
-                        //    'icon' => 'fas fa-fw fa-calendar',
-                        //],
-                    ],
-                ],*/
-            ],
-        ],
-        [
-            'text' => 'Users',
-            'url'  => 'users/list',
-            'icon' => 'fas fa-fw fa-user',
-            'can'  => 'is_super',
         ],
     ],
+
+    // ============================================
+    // ADMINISTRAÇÃO (Usuários)
+    // ============================================
+    [
+        'text' => 'ADMINISTRAÇÃO',
+        'icon' => 'fas fa-fw fa-user-shield',
+        'can'  => 'is_super',
+        'submenu' => [
+            [
+                'text' => 'Usuários',
+                'icon' => 'fas fa-fw fa-users-cog',
+                'url'  => 'users/list',
+                'can'  => 'is_super',
+            ],
+        ],
+    ],
+],
 
     /*
     |--------------------------------------------------------------------------

@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="d-flex justify-content-between align-items-center">
     <h1><i class="fas fa-list-alt mr-2"></i>Subatividades</h1>
-    <a href="{{ route('subatividades.create', ['atividade_id' => $atividadeId]) }}" class="btn btn-success">
+    <a href="{{ route('subatividades.create', ['atividade_id' => request('atividade_id')]) }}" class="btn btn-success">
         <i class="fas fa-plus mr-1"></i> Nova Subatividade
     </a>
 </div>
@@ -16,53 +16,67 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <div class="card-tools">
-                    <form method="GET" action="{{ route('subatividades.index') }}" class="form-inline">
-                        <div class="input-group mr-2" style="width: 400px;">
-                            <select name="atividade_id" class="form-control">
-                                <option value="">Todas as Atividades</option>
-                                @foreach($atividades as $atividade)
-                                    <option value="{{ $atividade->id }}" {{ $atividadeId == $atividade->id ? 'selected' : '' }}>
-                                        {{ $atividade->categoriaObra->codigo }}.{{ $atividade->codigo }} - {{ $atividade->nome }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-filter"></i> Filtrar
-                                </button>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3 class="card-title">
+                            @if(request('atividade_id') && isset($atividadeSelecionada))
+                                <span class="badge bg-info">
+                                    Atividade: {{ $atividadeSelecionada->categoriaObra->codigo }}.{{ $atividadeSelecionada->codigo }} - {{ $atividadeSelecionada->nome }}
+                                </span>
+                            @else
+                                Lista de Subatividades
+                            @endif
+                        </h3>
+                    </div>
+                    <div class="col-md-6">
+                        <form method="GET" action="{{ route('subatividades.index') }}" class="form-inline justify-content-end">
+                            <div class="form-group mr-2">
+                                <select name="atividade_id" class="form-control" id="atividadeSelect" style="min-width: 300px;">
+                                    <option value="">Todas as Atividades</option>
+                                    @foreach($atividades as $atividade)
+                                        <option value="{{ $atividade->id }}" {{ request('atividade_id') == $atividade->id ? 'selected' : '' }}>
+                                            {{ $atividade->categoriaObra->codigo }}.{{ $atividade->codigo }} - {{ $atividade->nome }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
-                        </div>
-                    </form>
+                            @if(request('atividade_id'))
+                                <a href="{{ route('subatividades.index') }}" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Limpar
+                                </a>
+                            @endif
+                        </form>
+                    </div>
                 </div>
             </div>
 
             <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
                     <thead>
-                        <tr>
+                        60d
                             <th width="80">Código</th>
                             <th>Nome</th>
                             <th width="80">Unidade</th>
                             <th width="60">NPI</th>
-                            <th width="100">C x L x H</th>
+                            <th width="120">Dimensões (C x L x H)</th>
                             <th width="100">Elementar</th>
                             <th width="100">Parcial</th>
-                            <th width="100">Perda %</th>
+                            <th width="80">Perda %</th>
                             <th width="120">Quant. Proposta</th>
-                            <th width="200">Ações</th>
-                        </tr>
-                    </thead>
+                            <th width="220">Ações</th>
+                        </thead>
                     <tbody>
                         @forelse($subatividades as $sub)
                         <tr>
                             <td><span class="badge bg-primary">{{ $sub->codigo }}</span></td>
-                            <td>{{ $sub->nome }}</td>
+                            <td>{{ Str::limit($sub->nome, 50) }}</td>
                             <td>{{ $sub->unidade }}</td>
                             <td class="text-center">{{ $sub->npi }}</td>
                             <td class="text-center">
                                 @if($sub->comprimento)
-                                    {{ $sub->comprimento }} x {{ $sub->largura ?? '-' }} x {{ $sub->altura ?? '-' }}
+                                    {{ number_format($sub->comprimento, 2) }} 
+                                    @if($sub->largura) x {{ number_format($sub->largura, 2) }} @endif
+                                    @if($sub->altura) x {{ number_format($sub->altura, 2) }} @endif
                                 @else
                                     -
                                 @endif
@@ -90,7 +104,7 @@
                                     </a>
                                     <button type="button" 
                                             class="btn btn-sm btn-danger" 
-                                            onclick="confirmDelete({{ $sub->id }}, '{{ $sub->nome }}')"
+                                            onclick="confirmDelete({{ $sub->id }}, '{{ addslashes($sub->nome) }}')"
                                             title="Excluir">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -106,9 +120,14 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="11" class="text-center text-muted py-4">
+                            <td colspan="10" class="text-center text-muted py-4">
                                 <i class="fas fa-info-circle mr-1"></i>
                                 Nenhuma subatividade encontrada.
+                                @if(request('atividade_id'))
+                                    <a href="{{ route('subatividades.index') }}" class="btn btn-sm btn-primary ml-2">
+                                        <i class="fas fa-times"></i> Limpar filtro
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                         @endforelse
@@ -135,5 +154,16 @@ function confirmDelete(id, nome) {
         document.getElementById('delete-form-' + id).submit();
     }
 }
+
+// FILTRO AUTOMÁTICO AO SELECIONAR
+document.getElementById('atividadeSelect').addEventListener('change', function() {
+    const url = new URL(window.location.href);
+    if (this.value) {
+        url.searchParams.set('atividade_id', this.value);
+    } else {
+        url.searchParams.delete('atividade_id');
+    }
+    window.location.href = url.toString();
+});
 </script>
 @stop

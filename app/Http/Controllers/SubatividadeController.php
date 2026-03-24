@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Subatividade;
 use App\Models\Atividade;
-use App\Models\Material;
 use Illuminate\Http\Request;
 
 class SubatividadeController extends Controller
@@ -14,15 +13,12 @@ class SubatividadeController extends Controller
         $this->middleware('auth');
     }
 
-    /**
-     * Lista subatividades por atividade.
-     */
     public function index(Request $request)
     {
         $atividadeId = $request->get('atividade_id');
         $atividades = Atividade::with('categoriaObra')->orderBy('categoria_obra_id')->orderBy('codigo')->get();
 
-        $subatividades = Subatividade::with('atividade.categoriaObra')
+        $subatividades = Subatividade::with(['atividade.categoriaObra', 'composicaoCustos'])
             ->when($atividadeId, function ($query, $atividadeId) {
                 return $query->where('atividade_id', $atividadeId);
             })
@@ -34,9 +30,6 @@ class SubatividadeController extends Controller
         return view('subatividades.index', compact('subatividades', 'atividades', 'atividadeId'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(Request $request)
     {
         $atividades = Atividade::with('categoriaObra')->orderBy('categoria_obra_id')->orderBy('codigo')->get();
@@ -44,9 +37,6 @@ class SubatividadeController extends Controller
         return view('subatividades.create', compact('atividades', 'atividadeId'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -59,7 +49,6 @@ class SubatividadeController extends Controller
             'largura' => 'nullable|numeric|min:0',
             'altura' => 'nullable|numeric|min:0',
             'perda_percentual' => 'nullable|numeric|min:0|max:100',
-            'quantidade_proposta' => 'nullable|numeric|min:0',
             'descricao' => 'nullable|string',
             'ordem' => 'nullable|integer',
         ]);
@@ -74,50 +63,35 @@ class SubatividadeController extends Controller
                 ->with('error', 'Já existe uma subatividade com este código nesta atividade.');
         }
 
-        // 🔥 FIX: Definir ordem como 0 se não foi enviado
-    $data = $request->all();
-    if (!isset($data['ordem']) || $data['ordem'] === null) {
-        $data['ordem'] = 0;
-    }
-
-        // Criar a subatividade
         $subatividade = new Subatividade();
         $subatividade->fill($request->all());
-
-        // Calcular valores automaticamente
+        
+        // 🔥 USAR O MÉTODO recalcular() DO MODEL
         $subatividade->recalcular();
-
-        $subatividade->save();
+        
+        // 🔥 NÃO PRECISA MAIS SALVAR SEPARADAMENTE, O recalcular() JÁ SALVA
 
         return redirect()->route('subatividades.show', $subatividade->id)
             ->with('success', 'Subatividade criada com sucesso!');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Subatividade $subatividade)
     {
-        $subatividade->load('atividade.categoriaObra', 'composicaoCustos.material');
+        // 🔥 O MODEL JÁ CARREGA OS RELACIONAMENTOS AUTOMATICAMENTE
+        $subatividade->load(['atividade.categoriaObra', 'composicaoCustos.material']);
         
-        // Recalcular antes de mostrar para garantir dados atualizados
+        // 🔥 O método recalcular() atualiza os valores automaticamente
         $subatividade->recalcular();
         
         return view('subatividades.show', compact('subatividade'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Subatividade $subatividade)
     {
         $atividades = Atividade::with('categoriaObra')->orderBy('categoria_obra_id')->orderBy('codigo')->get();
         return view('subatividades.edit', compact('subatividade', 'atividades'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Subatividade $subatividade)
     {
         $request->validate([
@@ -130,7 +104,6 @@ class SubatividadeController extends Controller
             'largura' => 'nullable|numeric|min:0',
             'altura' => 'nullable|numeric|min:0',
             'perda_percentual' => 'nullable|numeric|min:0|max:100',
-            'quantidade_proposta' => 'nullable|numeric|min:0',
             'descricao' => 'nullable|string',
             'ordem' => 'nullable|integer',
         ]);
@@ -147,16 +120,14 @@ class SubatividadeController extends Controller
         }
 
         $subatividade->fill($request->all());
-        $subatividade->recalcular(); // Recalcula elementar, parcial e quantidade proposta
-        $subatividade->save();
+        
+        // 🔥 USAR O MÉTODO recalcular() DO MODEL
+        $subatividade->recalcular();
 
         return redirect()->route('subatividades.show', $subatividade->id)
             ->with('success', 'Subatividade atualizada com sucesso!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Subatividade $subatividade)
     {
         $atividadeId = $subatividade->atividade_id;
@@ -164,7 +135,7 @@ class SubatividadeController extends Controller
         // Verificar se existem composições de custo
         if ($subatividade->composicaoCustos()->count() > 0) {
             return redirect()->route('subatividades.index', ['atividade_id' => $atividadeId])
-                ->with('error', 'Não é possível excluir esta subatividade pois existem materiais vinculados. Remova-os primeiro.');
+                ->with('error', 'Não é possível excluir esta subatividade pois existem materiais vinculados.');
         }
 
         $subatividade->delete();
@@ -173,9 +144,6 @@ class SubatividadeController extends Controller
             ->with('success', 'Subatividade excluída com sucesso!');
     }
 
-    /**
-     * API para recalcular via AJAX (opcional, para usar com JavaScript)
-     */
     public function calcular(Request $request)
     {
         $request->validate([

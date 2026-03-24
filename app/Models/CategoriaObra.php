@@ -10,33 +10,68 @@ class CategoriaObra extends Model
 {
     use HasFactory, SoftDeletes;
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
     protected $table = 'categorias_obra';
 
     protected $fillable = [
-        'nome',
-        'codigo',
-        'descricao',
-        'ordem'
+        'nome', 'codigo', 'descricao', 'ordem'
     ];
 
-    /**
-     * Relacionamento com itens do orçamento
-     */
-    public function itens()
+    // RELACIONAMENTO COM ATIVIDADES (CORRETO)
+    public function atividades()
     {
-        return $this->hasMany(ItemOrcamento::class, 'categoria_obra_id'); // CORRETO
+        return $this->hasMany(Atividade::class)->orderBy('ordem')->orderBy('codigo');
     }
 
-    /**
-     * Calcula o subtotal da categoria
-     */
+    // Relacionamento com itens do orçamento (mantido para compatibilidade)
+    public function itens()
+    {
+        return $this->hasMany(ItemOrcamento::class, 'categoria_obra_id');
+    }
+
+    // Calcula o subtotal da categoria (baseado em itens - sistema antigo)
     public function getSubtotalAttribute()
     {
         return $this->itens()->sum('total');
+    }
+    
+    // Calcula o total da categoria baseado nas atividades (sistema novo)
+    public function getTotalAttribute()
+    {
+        $total = 0;
+        foreach ($this->atividades as $atividade) {
+            foreach ($atividade->subatividades as $sub) {
+                $total += $sub->total;
+            }
+        }
+        return $total;
+    }
+
+    // Calcula o total da categoria baseado no orçamento específico
+    public function getTotalPorOrcamento($orcamentoId)
+    {
+        $total = 0;
+        foreach ($this->atividades as $atividade) {
+            // Verificar se a atividade está no orçamento
+            $orcamentoAtividade = OrcamentoAtividade::where('orcamento_id', $orcamentoId)
+                ->where('atividade_id', $atividade->id)
+                ->first();
+            
+            if ($orcamentoAtividade) {
+                foreach ($atividade->subatividades as $sub) {
+                    $total += $sub->total;
+                }
+            }
+        }
+        return $total;
+    }
+
+    // Conta o número total de subatividades da categoria
+    public function getTotalSubatividadesAttribute()
+    {
+        $total = 0;
+        foreach ($this->atividades as $atividade) {
+            $total += $atividade->subatividades->count();
+        }
+        return $total;
     }
 }

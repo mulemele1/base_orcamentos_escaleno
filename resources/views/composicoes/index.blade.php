@@ -6,7 +6,7 @@
 <div class="d-flex justify-content-between align-items-center">
     <h1><i class="fas fa-cubes mr-2"></i>Composição de Custos</h1>
     <a href="{{ route('composicoes.create', ['subatividade_id' => $subatividadeId]) }}" class="btn btn-success">
-        <i class="fas fa-plus mr-1"></i> Adicionar Material
+        <i class="fas fa-plus mr-1"></i> Adicionar Composição
     </a>
 </div>
 @stop

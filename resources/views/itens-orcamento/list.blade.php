@@ -2,295 +2,684 @@
 
 @section('title', 'Itens de Orçamento - ' . $categoria->nome)
 
+@section('content_header')
+@endsection
+
 @section('content')
 <style>
-    .table {
-        background-color: #e3f2fd;
-        color: #333;
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700;800&family=Roboto:wght@300;400;500;600&display=swap');
+
+    :root {
+        --ink:       #0d1117;
+        --ink-soft:  #3a4252;
+        --ink-muted: #8891a4;
+        --surface:   #f4f5f7;
+        --card:      #ffffff;
+        --border:    #e2e5eb;
+        --accent:    #1c6ef3;
+        --green:     #16a34a;
+        --amber:     #d97706;
+        --red:       #dc2626;
+        --purple:    #7c3aed;
+        --teal:      #0891b2;
+        --radius:    12px;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+        --shadow-md: 0 4px 16px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.05);
     }
-    .table th {
-        background-color: #90caf9;
+
+    * { box-sizing: border-box; }
+
+    body, .wrapper {
+        background: var(--surface) !important;
+        font-family: 'Roboto', sans-serif !important;
+        color: var(--ink) !important;
+    }
+
+    /* ── Page Header ── */
+    .page-header {
+        background: var(--ink);
+        border-radius: var(--radius);
+        padding: 28px 32px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+    }
+    .page-header::before {
+        content: '';
+        position: absolute;
+        right: -60px; top: -60px;
+        width: 280px; height: 280px;
+        background: radial-gradient(circle, rgba(28,110,243,.35) 0%, transparent 70%);
+        pointer-events: none;
+    }
+    .page-header::after {
+        content: '';
+        position: absolute;
+        right: 80px; bottom: -80px;
+        width: 200px; height: 200px;
+        background: radial-gradient(circle, rgba(8,145,178,.2) 0%, transparent 70%);
+        pointer-events: none;
+    }
+    .page-header-left h1 {
+        font-family: 'Roboto Slab', serif;
+        font-weight: 800;
+        font-size: 1.7rem;
         color: #fff;
-        text-align: center;
-        font-size: 0.85rem;
+        margin: 0 0 6px;
+        letter-spacing: -.3px;
+        line-height: 1.2;
+    }
+    .page-header-left p {
+        color: rgba(255,255,255,.5);
+        font-size: .88rem;
+        margin: 0;
+    }
+    .page-header-right {
+        display: flex;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+        flex-shrink: 0;
+    }
+    .btn-header {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-size: .85rem;
+        font-weight: 600;
+        text-decoration: none !important;
+        transition: all .2s;
+        border: none;
+        cursor: pointer;
+        font-family: 'Roboto', sans-serif;
         white-space: nowrap;
     }
-    .table td {
-        background-color: #e3f2fd;
-        color: #000;
-        text-align: center;
-        vertical-align: middle;
-        font-size: 0.85rem;
+    .btn-header-primary {
+        background: var(--accent);
+        color: #fff !important;
     }
-    .table .btn {
-        display: inline-flex;
-        justify-content: center;
+    .btn-header-primary:hover {
+        background: #1558d0;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(28,110,243,.4);
+        color: #fff !important;
+    }
+    .btn-header-success {
+        background: var(--green);
+        color: #fff !important;
+    }
+    .btn-header-success:hover {
+        background: #15803d;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(22,163,74,.35);
+        color: #fff !important;
+    }
+    .btn-header-ghost {
+        background: rgba(255,255,255,.1);
+        color: rgba(255,255,255,.85) !important;
+        border: 1px solid rgba(255,255,255,.15);
+    }
+    .btn-header-ghost:hover {
+        background: rgba(255,255,255,.18);
+        color: #fff !important;
+        transform: translateY(-1px);
+    }
+
+    /* ── Summary Cards ── */
+    .summary-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+    .summary-card {
+        background: var(--card);
+        border-radius: var(--radius);
+        padding: 18px 22px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+        display: flex;
         align-items: center;
-        width: 30px;
-        height: 30px;
-        border-radius: 4px;
+        gap: 16px;
     }
-    .btn-group {
-        display: inline-block;
+    .summary-icon {
+        width: 46px; height: 46px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
         justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
     }
-    .filter-box {
-        background-color: #f8f9fa;
-        padding: 15px;
-        border-radius: 5px;
+    .summary-icon.blue  { background: rgba(28,110,243,.1); color: var(--accent); }
+    .summary-icon.green { background: rgba(22,163,74,.1);  color: var(--green); }
+    .summary-value {
+        font-family: 'Roboto Slab', serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1;
+        margin-bottom: 3px;
+    }
+    .summary-value.green { color: var(--green); }
+    .summary-label {
+        font-size: .78rem;
+        color: var(--ink-muted);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+    /* ── Filter Panel ── */
+    .filter-panel {
+        background: var(--card);
+        border-radius: var(--radius);
+        padding: 20px 24px;
         margin-bottom: 20px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
     }
-    .resumo-card {
-        background-color: #fff;
-        border-radius: 5px;
-        padding: 15px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    .filter-label {
+        font-size: .8rem;
+        font-weight: 600;
+        color: var(--ink-soft);
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        margin-bottom: 6px;
+        display: block;
     }
-    .valor-total {
-        font-size: 1.5em;
-        font-weight: bold;
-        color: #28a745;
+    .filter-control {
+        width: 100%;
+        padding: 9px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-family: 'Roboto', sans-serif;
+        font-size: .9rem;
+        color: var(--ink);
+        background: var(--surface);
+        outline: none;
+        transition: border-color .2s, box-shadow .2s;
+        appearance: none;
     }
-    .badge-item {
-        font-size: 0.9em;
-        padding: 5px 8px;
+    .filter-control:focus {
+        border-color: var(--accent);
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(28,110,243,.12);
     }
-    .table-responsive {
-        overflow-x: auto;
+    .btn-filter {
+        width: 100%;
+        padding: 9px 20px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-family: 'Roboto', sans-serif;
+        font-size: .9rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: background .2s, transform .2s;
+    }
+    .btn-filter:hover { background: #1558d0; transform: translateY(-1px); }
+    .btn-clear {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: .82rem;
+        font-weight: 500;
+        text-decoration: none !important;
+        border: 1.5px solid var(--border);
+        background: var(--card);
+        color: var(--ink-muted) !important;
+        transition: all .2s;
+        margin-top: 10px;
+    }
+    .btn-clear:hover { border-color: var(--ink-muted); color: var(--ink) !important; }
+
+    /* ── Table Card ── */
+    .table-card {
+        background: var(--card);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
+        overflow: hidden;
+    }
+    .table-card-header {
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .table-card-title {
+        font-family: 'Roboto Slab', serif;
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--ink);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .table-card-title i { color: var(--accent); }
+    .table-count {
+        font-size: .82rem;
+        font-weight: 500;
+        color: var(--ink-muted);
+        background: var(--surface);
+        padding: 4px 12px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+    }
+
+    /* ── Table ── */
+    .mat-table { width: 100%; border-collapse: collapse; }
+    .mat-table thead th {
+        padding: 10px 10px;
+        font-size: .72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: var(--ink-muted);
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+        text-align: center;
+    }
+    .mat-table thead th:nth-child(2) { text-align: left; }
+    .mat-table thead th:first-child { padding-left: 20px; }
+    .mat-table thead th:last-child  { padding-right: 20px; }
+
+    .mat-table tbody tr {
+        border-bottom: 1px solid var(--border);
+        transition: background .15s;
+    }
+    .mat-table tbody tr:last-child { border-bottom: none; }
+    .mat-table tbody tr:hover { background: rgba(28,110,243,.03); }
+    .mat-table tbody td {
+        padding: 11px 10px;
+        font-size: .85rem;
+        color: var(--ink-soft);
+        vertical-align: middle;
+        text-align: center;
+    }
+    .mat-table tbody td:nth-child(2) { text-align: left; }
+    .mat-table tbody td:first-child { padding-left: 20px; }
+    .mat-table tbody td:last-child  { padding-right: 20px; }
+
+    /* ── Chips & Values ── */
+    .chip-item {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 9px;
+        border-radius: 6px;
+        font-size: .78rem;
+        font-weight: 700;
+        background: rgba(124,58,237,.08);
+        color: var(--purple);
+        font-family: 'Roboto', monospace;
+    }
+    .chip-unit {
+        display: inline-flex;
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-size: .78rem;
+        font-weight: 600;
+        background: rgba(8,145,178,.1);
+        color: var(--teal);
+    }
+    .val-total {
+        font-weight: 700;
+        color: var(--green);
+        font-size: .9rem;
+        font-variant-numeric: tabular-nums;
+    }
+    .val-num {
+        font-variant-numeric: tabular-nums;
+        color: var(--ink-soft);
+    }
+    .mat-desc {
+        font-weight: 500;
+        color: var(--ink);
+        font-size: .88rem;
+    }
+    .dim-cell {
+        font-size: .8rem;
+        color: var(--ink-muted);
+        white-space: nowrap;
+    }
+
+    /* ── Action Buttons ── */
+    .action-group { display: flex; gap: 5px; justify-content: center; }
+    .btn-icon {
+        width: 30px; height: 30px;
+        border-radius: 7px;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: .78rem;
+        text-decoration: none;
+        transition: all .2s;
+    }
+    .btn-icon-edit   { background: rgba(217,119,6,.1);  color: var(--amber); }
+    .btn-icon-edit:hover   { background: var(--amber);  color: #fff; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(217,119,6,.3); }
+    .btn-icon-dup    { background: rgba(124,58,237,.1); color: var(--purple); }
+    .btn-icon-dup:hover    { background: var(--purple); color: #fff; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(124,58,237,.3); }
+    .btn-icon-pdf    { background: rgba(220,38,38,.08); color: var(--red); }
+    .btn-icon-pdf:hover    { background: var(--red);    color: #fff; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(220,38,38,.3); }
+    .btn-icon-del    { background: rgba(13,17,23,.06);  color: var(--ink-muted); }
+    .btn-icon-del:hover    { background: var(--red);    color: #fff; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(220,38,38,.3); }
+
+    /* ── Empty State ── */
+    .empty-state { text-align: center; padding: 56px 20px; }
+    .empty-state-icon { font-size: 2.8rem; color: var(--border); margin-bottom: 14px; }
+    .empty-state h4 {
+        font-family: 'Roboto Slab', serif;
+        font-weight: 700;
+        color: var(--ink-soft);
+        margin-bottom: 6px;
+    }
+    .empty-state p { color: var(--ink-muted); font-size: .9rem; margin-bottom: 18px; }
+    .btn-empty {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 22px;
+        background: var(--accent);
+        color: #fff !important;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: .88rem;
+        text-decoration: none !important;
+        transition: all .2s;
+    }
+    .btn-empty:hover { background: #1558d0; transform: translateY(-1px); }
+
+    /* ── Pagination ── */
+    .table-footer {
+        padding: 14px 24px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .pagination-info { font-size: .85rem; color: var(--ink-muted); }
+    .pagination { display: flex; gap: 4px; margin: 0; list-style: none; padding: 0; }
+    .pagination li a,
+    .pagination li span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 32px;
+        height: 32px;
+        padding: 0 9px;
+        border-radius: 7px;
+        font-size: .83rem;
+        font-weight: 500;
+        text-decoration: none;
+        border: 1px solid var(--border);
+        color: var(--ink-soft);
+        background: var(--card);
+        transition: all .2s;
+    }
+    .pagination li a:hover { border-color: var(--accent); color: var(--accent); background: rgba(28,110,243,.05); }
+    .pagination li.active span { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .pagination li.disabled span { opacity: .4; cursor: not-allowed; }
+    .pagination li a svg,
+    .pagination li span svg { width: 14px !important; height: 14px !important; vertical-align: middle; }
+
+    @media (max-width: 768px) {
+        .summary-row { grid-template-columns: 1fr; }
+        .page-header { flex-direction: column; gap: 16px; align-items: flex-start; }
+        .page-header-right { flex-wrap: wrap; }
     }
 </style>
 
-<div class="row mb-3">
-    <div class="col-12">
-        <a href="{{ route('itens-orcamento.list') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Voltar para Categorias
-        </a>
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-header-left">
+        <h1>
+            <i class="fas fa-list mr-2" style="font-size:1.3rem; opacity:.7;"></i>{{ $categoria->nome }}
+        </h1>
+        <p>Itens de orçamento desta categoria</p>
     </div>
-</div>
-
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-    <h3 class="card-title">
-        <i class="fas fa-list mr-2"></i>
-        {{ $categoria->nome }} - Itens de Orçamento
-        <span class="badge badge-info ml-2">{{ $itens->total() }} itens</span>
-    </h3>
-    <div class="card-tools">
-        <a href="{{ route('itens-orcamento.export', $categoria->id) }}" 
-           class="btn-sm bg-success mr-2"
-           title="Exportar para Excel">
-            <i class="fas fa-file-excel"></i> Exportar Excel
+    <div class="page-header-right">
+        <a href="{{ route('itens-orcamento.list') }}" class="btn-header btn-header-ghost">
+            <i class="fas fa-arrow-left"></i> Categorias
         </a>
-        <a href="{{ route('itens-orcamento.create', ['categoria_id' => $categoria->id]) }}" 
-           class="btn-sm bg-lightblue">
+        <a href="{{ route('itens-orcamento.export', $categoria->id) }}" class="btn-header btn-header-success">
+            <i class="fas fa-file-excel"></i> Exportar
+        </a>
+        <a href="{{ route('itens-orcamento.create', ['categoria_id' => $categoria->id]) }}" class="btn-header btn-header-primary">
             <i class="fas fa-plus"></i> Novo Item
         </a>
     </div>
 </div>
-            <div class="card-body">
-                <!-- Resumo -->
-                <div class="resumo-card">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Total de Itens:</strong> {{ $itens->total() }}
-                        </div>
-                        <div class="col-md-6 text-right">
-                            <strong>Subtotal da Categoria:</strong> 
-                            <span class="valor-total">MT {{ number_format($subtotal, 2, ',', '.') }}</span>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Filtros Avançados -->
-<div class="filter-box">
-    <form method="GET" action="{{ route('itens-orcamento.list', ['categoria_id' => $categoria->id]) }}" class="row">
-        <div class="col-md-5">
-            <div class="form-group">
-                <label for="search">Pesquisar:</label>
-                <input type="text" class="form-control" id="search" name="search" 
-                       placeholder="Item, descrição ou comentários..." 
+<!-- Summary Cards -->
+<div class="summary-row">
+    <div class="summary-card">
+        <div class="summary-icon blue"><i class="fas fa-layer-group"></i></div>
+        <div>
+            <div class="summary-value">{{ $itens->total() }}</div>
+            <div class="summary-label">Total de Itens</div>
+        </div>
+    </div>
+    <div class="summary-card">
+        <div class="summary-icon green"><i class="fas fa-coins"></i></div>
+        <div>
+            <div class="summary-value green">MT {{ number_format($subtotal, 2, ',', '.') }}</div>
+            <div class="summary-label">Subtotal da Categoria</div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Panel -->
+<div class="filter-panel">
+    <form method="GET" action="{{ route('itens-orcamento.list', ['categoria_id' => $categoria->id]) }}">
+        <div class="row" style="margin: 0 -8px; align-items: flex-end;">
+            <div class="col-md-5" style="padding: 0 8px;">
+                <label class="filter-label"><i class="fas fa-search mr-1"></i>Pesquisar</label>
+                <input type="text" class="filter-control" name="search"
+                       placeholder="Item, descrição ou comentários..."
                        value="{{ request('search') }}">
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <label for="ordenar_por">Ordenar por:</label>
-                <select class="form-control" id="ordenar_por" name="ordenar_por">
-                    <option value="item" {{ request('ordenar_por') == 'item' ? 'selected' : '' }}>Item</option>
-                    <option value="descricao" {{ request('ordenar_por') == 'descricao' ? 'selected' : '' }}>Descrição</option>
-                    <option value="total" {{ request('ordenar_por') == 'total' ? 'selected' : '' }}>Total</option>
+            <div class="col-md-3" style="padding: 0 8px;">
+                <label class="filter-label"><i class="fas fa-sort mr-1"></i>Ordenar por</label>
+                <select class="filter-control" name="ordenar_por">
+                    <option value="item"       {{ request('ordenar_por') == 'item'       ? 'selected' : '' }}>Item</option>
+                    <option value="descricao"  {{ request('ordenar_por') == 'descricao'  ? 'selected' : '' }}>Descrição</option>
+                    <option value="total"      {{ request('ordenar_por') == 'total'      ? 'selected' : '' }}>Total</option>
                     <option value="created_at" {{ request('ordenar_por') == 'created_at' ? 'selected' : '' }}>Data de Criação</option>
                 </select>
             </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="ordenar_dir">Direção:</label>
-                <select class="form-control" id="ordenar_dir" name="ordenar_dir">
-                    <option value="asc" {{ request('ordenar_dir') == 'asc' ? 'selected' : '' }}>Crescente</option>
+            <div class="col-md-2" style="padding: 0 8px;">
+                <label class="filter-label"><i class="fas fa-arrows-alt-v mr-1"></i>Direção</label>
+                <select class="filter-control" name="ordenar_dir">
+                    <option value="asc"  {{ request('ordenar_dir') == 'asc'  ? 'selected' : '' }}>Crescente</option>
                     <option value="desc" {{ request('ordenar_dir') == 'desc' ? 'selected' : '' }}>Decrescente</option>
                 </select>
             </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label>&nbsp;</label>
-                <button type="submit" class="btn btn-info form-control">
+            <div class="col-md-2" style="padding: 0 8px;">
+                <label class="filter-label" style="visibility:hidden;">.</label>
+                <button type="submit" class="btn-filter">
                     <i class="fas fa-filter"></i> Filtrar
                 </button>
             </div>
         </div>
-    </form>
-    <div class="row mt-2">
-        <div class="col-12">
-            <a href="{{ route('itens-orcamento.list', ['categoria_id' => $categoria->id]) }}" 
-               class="btn btn-sm btn-default">
+        <div style="margin-top: 10px;">
+            <a href="{{ route('itens-orcamento.list', ['categoria_id' => $categoria->id]) }}" class="btn-clear">
                 <i class="fas fa-times"></i> Limpar Filtros
             </a>
         </div>
-    </div>
+    </form>
 </div>
 
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Descrição</th>
-                                <th>Un</th>
-                                <th>NPI</th>
-                                <th>Dimensões (C x L x H)</th>
-                                <th>Elementar</th>
-                                <th>Parcial</th>
-                                <th>Perdas</th>
-                                <th>Quant.</th>
-                                <th>C. Fornec.</th>
-                                <th>C. M.O.</th>
-                                <th>Preço Unit.</th>
-                                <th>Total</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($itens as $item)
-                                <tr>
-                                    <td><span class="badge bg-secondary badge-item">{{ $item->item }}</span></td>
-                                    <td class="text-left">{{ $item->descricao }}</td>
-                                    <td>{{ $item->unidade }}</td>
-                                    <td>{{ $item->npi ?? '-' }}</td>
-                                    <td>
-                                        @if($item->comprimento || $item->largura || $item->altura)
-                                            {{ $item->comprimento ?? '-' }} x 
-                                            {{ $item->largura ?? '-' }} x 
-                                            {{ $item->altura ?? '-' }}
-                                        @else
-                                            -
-                                        @endif
-                                    </td>
-                                    <td>{{ $item->elementar ? number_format($item->elementar, 2, ',', '.') : '-' }}</td>
-                                    <td>{{ $item->parcial ? number_format($item->parcial, 2, ',', '.') : '-' }}</td>
-                                    <td>{{ $item->perdas != 1 ? $item->perdas : '-' }}</td>
-                                    <td>{{ number_format($item->quantidade_proposta, 2, ',', '.') }}</td>
-                                    <td>{{ $item->custo_fornecimento ? 'MT ' . number_format($item->custo_fornecimento, 2, ',', '.') : '-' }}</td>
-                                    <td>{{ $item->custo_mao_obra ? 'MT ' . number_format($item->custo_mao_obra, 2, ',', '.') : '-' }}</td>
-                                    <td>MT {{ number_format($item->preco_unitario, 2, ',', '.') }}</td>
-                                    <td class="font-weight-bold">MT {{ number_format($item->total, 2, ',', '.') }}</td>
-                                    <td>
-    <div class="btn-group">
-        <a role="button" class="btn bg-lightblue" 
-           href="{{ route('itens-orcamento.edit', $item->id) }}"
-           title="Editar">
-            <i class="fas fa-pencil-alt"></i>
-        </a>
-        <a role="button" class="btn bg-purple" 
-           href="{{ route('itens-orcamento.duplicate', $item->id) }}"
-           title="Duplicar"
-           onclick="return confirm('Duplicar este item?')">
-            <i class="fas fa-copy"></i>
-        </a>
-        <a role="button" class="btn bg-danger" 
-           href="{{ route('pdf.item', $item->id) }}"
-           target="_blank"
-           title="PDF do Item">
-            <i class="fas fa-file-pdf"></i>
-        </a>
-        <button type="button" class="btn bg-danger" 
-                onclick="confirmDelete({{ $item->id }}, '{{ $item->item }}')"
-                title="Excluir">
-            <i class="fas fa-trash"></i>
-        </button>
+<!-- Table Card -->
+<div class="table-card">
+    <div class="table-card-header">
+        <h3 class="table-card-title">
+            <i class="fas fa-table"></i> Itens de Orçamento
+        </h3>
+        <span class="table-count">
+            @if($itens->total() > 0)
+                {{ $itens->firstItem() }}–{{ $itens->lastItem() }} de {{ $itens->total() }}
+            @else
+                0 registros
+            @endif
+        </span>
     </div>
-</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="14" class="text-center">
-                                        Nenhum item encontrado.
-                                        <a href="{{ route('itens-orcamento.create', ['categoria_id' => $categoria->id]) }}">
-                                            Clique aqui para adicionar o primeiro item.
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-                
-                <!-- Paginação -->
-                <div class="row mt-3">
-                    <div class="col-sm-12 col-md-5">
-                        <div class="dataTables_info">
-                            Mostrando {{ $itens->firstItem() }} a {{ $itens->lastItem() }} 
-                            de {{ $itens->total() }} registros
+
+    <div style="overflow-x: auto;">
+        <table class="mat-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Descrição</th>
+                    <th>Un</th>
+                    <th>NPI</th>
+                    <th>C × L × H</th>
+                    <th>Elementar</th>
+                    <th>Parcial</th>
+                    <th>Perdas</th>
+                    <th>Quant.</th>
+                    <th>C. Fornec.</th>
+                    <th>C. M.O.</th>
+                    <th>P. Unit.</th>
+                    <th>Total</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($itens as $item)
+                <tr>
+                    <td><span class="chip-item">{{ $item->item }}</span></td>
+                    <td><span class="mat-desc">{{ $item->descricao }}</span></td>
+                    <td><span class="chip-unit">{{ $item->unidade }}</span></td>
+                    <td class="val-num">{{ $item->npi ?? '—' }}</td>
+                    <td class="dim-cell">
+                        @if($item->comprimento || $item->largura || $item->altura)
+                            {{ $item->comprimento ?? '—' }} × {{ $item->largura ?? '—' }} × {{ $item->altura ?? '—' }}
+                        @else
+                            —
+                        @endif
+                    </td>
+                    <td class="val-num">{{ $item->elementar ? number_format($item->elementar, 2, ',', '.') : '—' }}</td>
+                    <td class="val-num">{{ $item->parcial ? number_format($item->parcial, 2, ',', '.') : '—' }}</td>
+                    <td class="val-num">{{ $item->perdas != 1 ? $item->perdas : '—' }}</td>
+                    <td class="val-num">{{ number_format($item->quantidade_proposta, 2, ',', '.') }}</td>
+                    <td class="val-num">{{ $item->custo_fornecimento ? 'MT '.number_format($item->custo_fornecimento, 2, ',', '.') : '—' }}</td>
+                    <td class="val-num">{{ $item->custo_mao_obra ? 'MT '.number_format($item->custo_mao_obra, 2, ',', '.') : '—' }}</td>
+                    <td class="val-num">MT {{ number_format($item->preco_unitario, 2, ',', '.') }}</td>
+                    <td><span class="val-total">MT {{ number_format($item->total, 2, ',', '.') }}</span></td>
+                    <td>
+                        <div class="action-group">
+                            <a href="{{ route('itens-orcamento.edit', $item->id) }}"
+                               class="btn-icon btn-icon-edit" title="Editar">
+                                <i class="fas fa-pencil-alt"></i>
+                            </a>
+                            <a href="{{ route('itens-orcamento.duplicate', $item->id) }}"
+                               class="btn-icon btn-icon-dup" title="Duplicar"
+                               onclick="return confirm('Duplicar este item?')">
+                                <i class="fas fa-copy"></i>
+                            </a>
+                            <a href="{{ route('pdf.item', $item->id) }}"
+                               target="_blank"
+                               class="btn-icon btn-icon-pdf" title="PDF do Item">
+                                <i class="fas fa-file-pdf"></i>
+                            </a>
+                            <button type="button"
+                                    class="btn-icon btn-icon-del"
+                                    onclick="confirmDelete({{ $item->id }}, '{{ addslashes($item->item) }}')"
+                                    title="Excluir">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </div>
-                    </div>
-                    <div class="col-sm-12 col-md-7">
-                        <div class="dataTables_paginate">
-                            {{ $itens->appends(request()->query())->links() }}
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="14">
+                        <div class="empty-state">
+                            <div class="empty-state-icon"><i class="fas fa-inbox"></i></div>
+                            <h4>Nenhum item encontrado</h4>
+                            <p>Adicione o primeiro item nesta categoria de orçamento.</p>
+                            <a href="{{ route('itens-orcamento.create', ['categoria_id' => $categoria->id]) }}" class="btn-empty">
+                                <i class="fas fa-plus"></i> Novo Item
+                            </a>
                         </div>
-                    </div>
-                </div>
-            </div>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    @if($itens->hasPages())
+    <div class="table-footer">
+        <div class="pagination-info">
+            <i class="fas fa-list mr-1"></i>
+            Exibindo <strong>{{ $itens->firstItem() }}</strong> a <strong>{{ $itens->lastItem() }}</strong>
+            de <strong>{{ $itens->total() }}</strong> registros
+        </div>
+        <div>
+            {{ $itens->appends(request()->query())->links() }}
         </div>
     </div>
+    @endif
 </div>
 
+<!-- SweetAlert2 -->
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.all.min.js"></script>
 
 <script>
     function confirmDelete(id, item) {
         Swal.fire({
-            title: "Tem certeza?",
-            html: `O item <strong>"${item}"</strong> será deletado permanentemente!`,
-            icon: "warning",
+            title: 'Excluir item?',
+            html: `<p style="color:#6b7280; margin-bottom:4px;">Você está prestes a excluir:</p>
+                   <strong style="color:#dc2626;">"${item}"</strong>
+                   <p style="color:#9ca3af; font-size:.85rem; margin-top:8px; margin-bottom:0;">Esta ação não pode ser desfeita.</p>`,
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Sim, deletar!",
-            cancelButtonText: "Cancelar"
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: '<i class="fas fa-trash mr-1"></i> Excluir',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]');
+                if (!csrfToken) return;
+
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = '{{ route("itens-orcamento.destroy", "") }}/' + id;
-                
-                const csrfToken = document.querySelector('meta[name="csrf-token"]');
-                if (!csrfToken) return;
-                
+
                 const methodInput = document.createElement('input');
                 methodInput.type = 'hidden';
                 methodInput.name = '_method';
                 methodInput.value = 'DELETE';
-                
+
                 const csrfInput = document.createElement('input');
                 csrfInput.type = 'hidden';
                 csrfInput.name = '_token';
                 csrfInput.value = csrfToken.getAttribute('content');
-                
+
                 form.appendChild(methodInput);
                 form.appendChild(csrfInput);
                 document.body.appendChild(form);
@@ -305,7 +694,9 @@
             title: 'Sucesso!',
             text: '{{ session('success') }}',
             showConfirmButton: false,
-            timer: 3000
+            timer: 3000,
+            toast: true,
+            position: 'top-end'
         });
     @endif
 
@@ -314,7 +705,7 @@
             icon: 'error',
             title: 'Erro!',
             text: '{{ session('error') }}',
-            showConfirmButton: true
+            confirmButtonColor: '#dc2626'
         });
     @endif
 </script>

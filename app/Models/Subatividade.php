@@ -25,18 +25,28 @@ class Subatividade extends Model
         'quantidade_proposta' => 'decimal:2',
     ];
 
+    // ========== RELACIONAMENTOS ==========
+    
+    /**
+     * Atividade pai
+     */
     public function atividade()
     {
         return $this->belongsTo(Atividade::class);
     }
 
+    /**
+     * Composição de custos (materiais)
+     */
     public function composicaoCustos()
     {
         return $this->hasMany(ComposicaoCusto::class);
     }
 
+    // ========== MÉTODOS DE CÁLCULO ==========
+    
     /**
-     * Calcular elementar (C x L x H)
+     * Calcular elementar (C × L × H)
      */
     public function calcularElementar()
     {
@@ -51,23 +61,23 @@ class Subatividade extends Model
     }
 
     /**
-     * Calcular parcial (NPI x Elementar)
+     * Calcular parcial (NPI × Elementar)
      */
     public function calcularParcial()
     {
-        return $this->npi * $this->calcularElementar();
+        return ($this->npi ?? 1) * $this->calcularElementar();
     }
 
     /**
-     * Calcular quantidade proposta (Parcial x (1 + Perda/100))
+     * Calcular quantidade proposta (Parcial × (1 + Perda/100))
      */
     public function calcularQuantidadeProposta()
     {
-        return $this->calcularParcial() * (1 + ($this->perda_percentual / 100));
+        return $this->calcularParcial() * (1 + (($this->perda_percentual ?? 0) / 100));
     }
 
     /**
-     * Recalcular todos os valores
+     * Recalcular todos os valores e salvar
      */
     public function recalcular()
     {
@@ -79,6 +89,8 @@ class Subatividade extends Model
         return $this;
     }
 
+    // ========== ACESSORES ==========
+    
     /**
      * Total de materiais
      */
@@ -86,10 +98,7 @@ class Subatividade extends Model
     {
         return $this->composicaoCustos()
             ->where('tipo', 'material')
-            ->get()
-            ->sum(function($item) {
-                return $item->custo_total ?? 0;
-            });
+            ->sum('custo_total');
     }
 
     /**
@@ -99,10 +108,7 @@ class Subatividade extends Model
     {
         return $this->composicaoCustos()
             ->where('tipo', 'mao_obra')
-            ->get()
-            ->sum(function($item) {
-                return $item->custo_total ?? 0;
-            });
+            ->sum('custo_total');
     }
 
     /**
