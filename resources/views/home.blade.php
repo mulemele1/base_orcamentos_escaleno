@@ -6,9 +6,9 @@
 <div class="d-flex justify-content-between align-items-center">
     <div>
         <h1 class="m-0 text-dark">
-            <i class="fas fa-chart-pie mr-2"></i>Dashboard de Orçamento e Medição
+            <i class="fas fa-chart-pie mr-2"></i>Dashboard de Medição e Orçamento
         </h1>
-        <small class="text-muted">Visão geral dos projetos e orçamentos</small>
+        <small class="text-muted">Visão geral dos projetos - Medições e orçamentos</small>
     </div>
     <div class="text-muted bg-white p-2 rounded shadow-sm">
         <i class="fas fa-calendar-alt text-primary mr-1"></i> 

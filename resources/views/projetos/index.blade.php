@@ -17,7 +17,7 @@
         <div class="card-body p-0">
             <table class="table table-hover mb-0">
                 <thead>
-                    60d
+                    
                         <th>ID</th>
                         <th>Nome</th>
                         <th>Cliente</th>

@@ -1,12 +1,10 @@
 @extends('adminlte::page')
 
-@section('title', 'Atividades')
-
 @section('content_header')
 <div class="d-flex justify-content-between align-items-center">
-    <h1><i class="fas fa-tasks mr-2"></i>Atividades</h1>
+    <h1><i class="fas fa-tasks mr-2"></i>Capítulos</h1>
     <a href="{{ route('atividades.create', ['categoria_id' => request('categoria_id')]) }}" class="btn btn-success">
-        <i class="fas fa-plus mr-1"></i> Nova Atividade
+        <i class="fas fa-plus mr-1"></i> Novo Capítulo
     </a>
 </div>
 @stop
@@ -18,13 +16,13 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-md-6">
-                        <h3 class="card-title">Lista de Atividades</h3>
+                        <h3 class="card-title">Lista de Capitulos</h3>
                     </div>
                     <div class="col-md-6">
                         <form method="GET" action="{{ route('atividades.index') }}" class="form-inline justify-content-end">
                             <div class="form-group mr-2">
                                 <select name="categoria_id" class="form-control" id="categoriaSelect" style="min-width: 250px;">
-                                    <option value="">Todas as Categorias</option>
+                                    <option value="">Todos os Módulos</option>
                                     @foreach($categorias as $categoria)
                                         <option value="{{ $categoria->id }}" 
                                             {{ request('categoria_id') == $categoria->id ? 'selected' : '' }}>
@@ -45,15 +43,11 @@
 
             <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
-                    <thead>
-                        60d
-                            <th width="80">Código</th>
-                            <th>Nome da Atividade</th>
-                            <th width="100">Unidade</th>
-                            <th width="80">NPI</th>
-                            <th width="200">Categoria</th>
-                            <th width="120">Subatividades</th>
-                            <th width="80">Ordem</th>
+                        
+                        <thead>
+                            <th width="200">Módulo</th>
+                            <th>Designação(Capítulo)</th>
+                            <th width="120">Actividades</th>
                             <th width="250">Ações</th>
                         </thead>
                     <tbody>
@@ -61,8 +55,7 @@
                         2d
                             <td><span class="badge bg-primary">{{ $atividade->codigo }}</span></td>
                             <td>{{ $atividade->nome }}</td>
-                            <td>{{ $atividade->unidade ?: 'Vg' }}</td>
-                            <td class="text-center">{{ $atividade->npi ?: 1 }}</td>
+                            
                             <td>
                                 @if($atividade->categoriaObra)
                                     <span class="badge bg-info">

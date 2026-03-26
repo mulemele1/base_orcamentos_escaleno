@@ -59,7 +59,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="categoria_obra_id">Categoria <span class="text-danger">*</span></label>
+                                <label for="categoria_obra_id">Módulo <span class="text-danger">*</span></label>
                                 <select class="form-control @error('categoria_obra_id') is-invalid @enderror" 
                                         id="categoria_obra_id" 
                                         name="categoria_obra_id" 

@@ -1,12 +1,12 @@
 
 
-<?php $__env->startSection('title', 'Subatividades'); ?>
+<?php $__env->startSection('title', 'Actividades'); ?>
 
 <?php $__env->startSection('content_header'); ?>
 <div class="d-flex justify-content-between align-items-center">
-    <h1><i class="fas fa-list-alt mr-2"></i>Subatividades</h1>
+    <h1><i class="fas fa-list-alt mr-2"></i>Actividades</h1>
     <a href="<?php echo e(route('subatividades.create', ['atividade_id' => request('atividade_id')])); ?>" class="btn btn-success">
-        <i class="fas fa-plus mr-1"></i> Nova Subatividade
+        <i class="fas fa-plus mr-1"></i> Nova Actividade
     </a>
 </div>
 <?php $__env->stopSection(); ?>
@@ -21,11 +21,11 @@
                         <h3 class="card-title">
                             <?php if(request('atividade_id') && isset($atividadeSelecionada)): ?>
                                 <span class="badge bg-info">
-                                    Atividade: <?php echo e($atividadeSelecionada->categoriaObra->codigo); ?>.<?php echo e($atividadeSelecionada->codigo); ?> - <?php echo e($atividadeSelecionada->nome); ?>
+                                    Actividade: <?php echo e($atividadeSelecionada->categoriaObra->codigo); ?>.<?php echo e($atividadeSelecionada->codigo); ?> - <?php echo e($atividadeSelecionada->nome); ?>
 
                                 </span>
                             <?php else: ?>
-                                Lista de Subatividades
+                                Lista de Actividades
                             <?php endif; ?>
                         </h3>
                     </div>
@@ -59,11 +59,6 @@
                             <th width="80">Código</th>
                             <th>Nome</th>
                             <th width="80">Unidade</th>
-                            <th width="60">NPI</th>
-                            <th width="120">Dimensões (C x L x H)</th>
-                            <th width="100">Elementar</th>
-                            <th width="100">Parcial</th>
-                            <th width="80">Perda %</th>
                             <th width="120">Quant. Proposta</th>
                             <th width="220">Ações</th>
                         </thead>
@@ -73,19 +68,7 @@
                             <td><span class="badge bg-primary"><?php echo e($sub->codigo); ?></span></td>
                             <td><?php echo e(Str::limit($sub->nome, 50)); ?></td>
                             <td><?php echo e($sub->unidade); ?></td>
-                            <td class="text-center"><?php echo e($sub->npi); ?></td>
-                            <td class="text-center">
-                                <?php if($sub->comprimento): ?>
-                                    <?php echo e(number_format($sub->comprimento, 2)); ?> 
-                                    <?php if($sub->largura): ?> x <?php echo e(number_format($sub->largura, 2)); ?> <?php endif; ?>
-                                    <?php if($sub->altura): ?> x <?php echo e(number_format($sub->altura, 2)); ?> <?php endif; ?>
-                                <?php else: ?>
-                                    -
-                                <?php endif; ?>
-                            </td>
-                            <td class="text-right"><?php echo e(number_format($sub->elementar, 2, ',', '.')); ?></td>
-                            <td class="text-right"><?php echo e(number_format($sub->parcial, 2, ',', '.')); ?></td>
-                            <td class="text-center"><?php echo e($sub->perda_percentual); ?>%</td>
+                            
                             <td class="text-right"><strong><?php echo e(number_format($sub->quantidade_proposta, 2, ',', '.')); ?></strong></td>
                             <td>
                                 <div class="btn-group">

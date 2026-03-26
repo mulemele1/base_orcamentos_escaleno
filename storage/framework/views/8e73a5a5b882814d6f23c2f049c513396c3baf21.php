@@ -4,7 +4,7 @@
 
 <?php $__env->startSection('content_header'); ?>
 <div class="d-flex justify-content-between align-items-center">
-    <h1><i class="fas fa-info-circle mr-2"></i>Detalhes da Atividade</h1>
+    <h1><i class="fas fa-info-circle mr-2"></i>Detalhes do Capitulo</h1>
     <div>
         <a href="<?php echo e(route('atividades.edit', $atividade->id)); ?>" class="btn btn-warning">
             <i class="fas fa-edit mr-1"></i> Editar
@@ -18,11 +18,11 @@
 
 <?php $__env->startSection('content'); ?>
 <div class="row">
-    <div class="col-md-6">
+    <!--<div class="col-md-6">
         <div class="card">
             <div class="card-header bg-primary text-white">
                 <h3 class="card-title">
-                    <i class="fas fa-info-circle mr-1"></i> Informações da Atividade
+                    <i class="fas fa-info-circle mr-1"></i> Informações do Capitulo
                 </h3>
             </div>
             <div class="card-body">
@@ -32,11 +32,11 @@
                         <td><span class="badge bg-primary"><?php echo e($atividade->codigo); ?></span></td>
                     </tr>
                     <tr>
-                        <th>Nome:</th>
+                        <th>Nome do Capitulo:</th>
                         <td><?php echo e($atividade->nome); ?></td>
                     </tr>
                     <tr>
-                        <th>Categoria:</th>
+                        <th>Modulo:</th>
                         <td>
                             <span class="badge bg-info">
                                 <?php echo e($atividade->categoriaObra->codigo); ?> - <?php echo e($atividade->categoriaObra->nome); ?>
@@ -67,18 +67,18 @@
                 </table>
             </div>
         </div>
-    </div>
+    </div>-->
 
     <div class="col-md-6">
         <div class="card">
             <div class="card-header bg-success text-white">
                 <h3 class="card-title">
-                    <i class="fas fa-list mr-1"></i> Subatividades
+                    <i class="fas fa-list mr-1"></i> Atividade
                 </h3>
                 <div class="card-tools">
                     <a href="<?php echo e(route('subatividades.create', ['atividade_id' => $atividade->id])); ?>" 
                        class="btn btn-sm btn-light">
-                        <i class="fas fa-plus"></i> Nova Subatividade
+                        <i class="fas fa-plus"></i> Nova atividade
                     </a>
                 </div>
             </div>
@@ -87,7 +87,7 @@
                     <thead>
                         <tr>
                             <th>Código</th>
-                            <th>Nome</th>
+                            <th>Designação</th>
                             <th>Unidade</th>
                             <th>Quant.</th>
                             <th>Ações</th>
@@ -100,6 +100,11 @@
                             <td><?php echo e($sub->nome); ?></td>
                             <td><?php echo e($sub->unidade); ?></td>
                             <td class="text-right"><?php echo e(number_format($sub->quantidade_proposta, 2, ',', '.')); ?></td>
+                            <td>
+                                <a href="<?php echo e(route('subatividades.show', $sub->id)); ?>" class="btn btn-xs btn-info">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
                             <td>
                                 <a href="<?php echo e(route('subatividades.show', $sub->id)); ?>" class="btn btn-xs btn-info">
                                     <i class="fas fa-eye"></i>

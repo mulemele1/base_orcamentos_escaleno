@@ -1,17 +1,15 @@
-@extends('adminlte::page')
-
-@section('content_header')
+<?php $__env->startSection('content_header'); ?>
     <div class="d-flex justify-content-between align-items-center">
-        <h1><i class="fas fa-project-diagram mr-2"></i>{{ $projeto->nome }}</h1>
+        <h1><i class="fas fa-project-diagram mr-2"></i><?php echo e($projeto->nome); ?></h1>
         <div>
-            <a href="{{ route('projetos.edit', $projeto->id) }}" class="btn btn-primary">
+            <a href="<?php echo e(route('projetos.edit', $projeto->id)); ?>" class="btn btn-primary">
                 <i class="fas fa-edit"></i> Editar
             </a>
-            @if($orcamentoAtivo)
-                <a href="{{ route('orcamentos.edit', $orcamentoAtivo->id) }}" class="btn btn-success">
+            <?php if($orcamentoAtivo): ?>
+                <a href="<?php echo e(route('orcamentos.edit', $orcamentoAtivo->id)); ?>" class="btn btn-success">
                     <i class="fas fa-chart-line"></i> Editar Orçamento
                 </a>
-                <a href="{{ route('orcamentos.pdf', $orcamentoAtivo->id) }}" class="btn btn-danger">
+                <a href="<?php echo e(route('orcamentos.pdf', $orcamentoAtivo->id)); ?>" class="btn btn-danger">
                     <i class="fas fa-file-pdf"></i> PDF
                 </a>
                 <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#novaVersaoModal">
@@ -20,18 +18,18 @@
                 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalAplicarTemplate">
                     <i class="fas fa-copy"></i> Usar Template
                 </button>
-            @endif
+            <?php endif; ?>
         </div>
     </div>
-@stop
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <!-- Cards de Resumo -->
     <div class="row">
         <div class="col-lg-3 col-6">
             <div class="small-box bg-info">
                 <div class="inner">
-                    <h3>{{ $projeto->data_inicio ? $projeto->data_inicio->format('d/m/Y') : '-' }}</h3>
+                    <h3><?php echo e($projeto->data_inicio ? $projeto->data_inicio->format('d/m/Y') : '-'); ?></h3>
                     <p>Data de Início</p>
                 </div>
                 <div class="icon">
@@ -42,7 +40,7 @@
         <div class="col-lg-3 col-6">
             <div class="small-box bg-warning">
                 <div class="inner">
-                    <h3>{{ $projeto->data_fim ? $projeto->data_fim->format('d/m/Y') : '-' }}</h3>
+                    <h3><?php echo e($projeto->data_fim ? $projeto->data_fim->format('d/m/Y') : '-'); ?></h3>
                     <p>Data de Fim</p>
                 </div>
                 <div class="icon">
@@ -53,7 +51,7 @@
         <div class="col-lg-3 col-6">
             <div class="small-box bg-success">
                 <div class="inner">
-                    <h3>MT {{ number_format($projeto->valor_total, 2, ',', '.') }}</h3>
+                    <h3>MT <?php echo e(number_format($projeto->valor_total, 2, ',', '.')); ?></h3>
                     <p>Valor Total</p>
                 </div>
                 <div class="icon">
@@ -64,7 +62,7 @@
         <div class="col-lg-3 col-6">
             <div class="small-box bg-primary">
                 <div class="inner">
-                    <h3>v{{ $orcamentoAtivo ? $orcamentoAtivo->versao : 0 }}</h3>
+                    <h3>v<?php echo e($orcamentoAtivo ? $orcamentoAtivo->versao : 0); ?></h3>
                     <p>Versão Atual</p>
                 </div>
                 <div class="icon">
@@ -82,26 +80,27 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <p><strong>Cliente:</strong> {{ $projeto->cliente }}</p>
-                    <p><strong>Localização:</strong> {{ $projeto->localizacao }}</p>
+                    <p><strong>Cliente:</strong> <?php echo e($projeto->cliente); ?></p>
+                    <p><strong>Localização:</strong> <?php echo e($projeto->localizacao); ?></p>
                     <p><strong>Status:</strong> 
-                        @php
+                        <?php
                             $statusColors = [
                                 'planeamento' => 'info',
                                 'em_andamento' => 'warning',
                                 'concluido' => 'success',
                                 'suspenso' => 'danger',
                             ];
-                        @endphp
-                        <span class="badge badge-{{ $statusColors[$projeto->status] }}">
-                            {{ $projeto->status_formatado }}
+                        ?>
+                        <span class="badge badge-<?php echo e($statusColors[$projeto->status]); ?>">
+                            <?php echo e($projeto->status_formatado); ?>
+
                         </span>
                     </p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Template:</strong> {{ $projeto->template ? $projeto->template->nome : 'Nenhum' }}</p>
-                    <p><strong>IVA:</strong> {{ $projeto->configuracoes['iva'] ?? 16 }}%</p>
-                    <p><strong>Contingência:</strong> {{ $projeto->configuracoes['contingencia'] ?? 8 }}%</p>
+                    <p><strong>Template:</strong> <?php echo e($projeto->template ? $projeto->template->nome : 'Nenhum'); ?></p>
+                    <p><strong>IVA:</strong> <?php echo e($projeto->configuracoes['iva'] ?? 16); ?>%</p>
+                    <p><strong>Contingência:</strong> <?php echo e($projeto->configuracoes['contingencia'] ?? 8); ?>%</p>
                 </div>
             </div>
         </div>
@@ -125,46 +124,47 @@
                         <th>Ações</th>
                     </thead>
                 <tbody>
-                    @forelse($projeto->orcamentos as $orcamento)
+                    <?php $__empty_1 = true; $__currentLoopData = $projeto->orcamentos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $orcamento): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     
-                        <td>v{{ $orcamento->versao }}</td>
-                        <td>{{ $orcamento->codigo }}</td>
-                        <td>{{ $orcamento->data_emissao->format('d/m/Y') }}</td>
+                        <td>v<?php echo e($orcamento->versao); ?></td>
+                        <td><?php echo e($orcamento->codigo); ?></td>
+                        <td><?php echo e($orcamento->data_emissao->format('d/m/Y')); ?></td>
                         <td>
-                            @php
+                            <?php
                                 $statusColors = [
                                     'rascunho' => 'secondary',
                                     'em_analise' => 'info',
                                     'aprovado' => 'success',
                                     'rejeitado' => 'danger',
                                 ];
-                            @endphp
-                            <span class="badge badge-{{ $statusColors[$orcamento->status] }}">
-                                {{ $orcamento->status }}
+                            ?>
+                            <span class="badge badge-<?php echo e($statusColors[$orcamento->status]); ?>">
+                                <?php echo e($orcamento->status); ?>
+
                             </span>
                         </td>
-                        <td class="text-right">MT {{ number_format($orcamento->subtotal, 2, ',', '.') }}</td>
-                        <td class="text-right">MT {{ number_format($orcamento->grand_total, 2, ',', '.') }}</td>
+                        <td class="text-right">MT <?php echo e(number_format($orcamento->subtotal, 2, ',', '.')); ?></td>
+                        <td class="text-right">MT <?php echo e(number_format($orcamento->grand_total, 2, ',', '.')); ?></td>
                         <td>
-                            <a href="{{ route('orcamentos.show', $orcamento->id) }}" class="btn btn-sm btn-info">
+                            <a href="<?php echo e(route('orcamentos.show', $orcamento->id)); ?>" class="btn btn-sm btn-info">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <a href="{{ route('orcamentos.pdf', $orcamento->id) }}" class="btn btn-sm btn-danger">
+                            <a href="<?php echo e(route('orcamentos.pdf', $orcamento->id)); ?>" class="btn btn-sm btn-danger">
                                 <i class="fas fa-file-pdf"></i>
                             </a>
                         </td>
                     </tr>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <tr>
                         <td colspan="7" class="text-center py-4">
                             <i class="fas fa-folder-open fa-3x mb-3 text-muted"></i>
                             <p>Nenhum orçamento associado a este projeto.</p>
-                            <a href="{{ route('projetos.edit', $projeto->id) }}" class="btn btn-primary">
+                            <a href="<?php echo e(route('projetos.edit', $projeto->id)); ?>" class="btn btn-primary">
                                 <i class="fas fa-plus"></i> Criar Orçamento
                             </a>
                         </td>
                     </tr>
-                    @endforelse
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -186,7 +186,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <a href="{{ route('projetos.nova-versao', $projeto->id) }}" class="btn btn-primary">
+                    <a href="<?php echo e(route('projetos.nova-versao', $projeto->id)); ?>" class="btn btn-primary">
                         Criar Nova Versão
                     </a>
                 </div>
@@ -203,20 +203,21 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <form id="formAplicarTemplate" action="{{ route('templates.aplicar', '__TEMPLATE_ID__') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="projeto_id" value="{{ $projeto->id }}">
+                    <form id="formAplicarTemplate" action="<?php echo e(route('templates.aplicar', '__TEMPLATE_ID__')); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
+                        <input type="hidden" name="projeto_id" value="<?php echo e($projeto->id); ?>">
                         <div class="form-group">
                             <label for="template_id">Selecione um Template</label>
                             <select name="template_id" id="template_id" class="form-control" required>
                                 <option value="">-- Selecione --</option>
-                                @foreach($templates as $template)
-                                    <option value="{{ $template->id }}">
-                                        {{ $template->nome }} 
-                                        @if($template->tipo_projeto) ({{ $template->tipo_projeto }}) @endif
-                                        - {{ $template->user->name ?? 'Desconhecido' }}
+                                <?php $__currentLoopData = $templates; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $template): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($template->id); ?>">
+                                        <?php echo e($template->nome); ?> 
+                                        <?php if($template->tipo_projeto): ?> (<?php echo e($template->tipo_projeto); ?>) <?php endif; ?>
+                                        - <?php echo e($template->user->name ?? 'Desconhecido'); ?>
+
                                     </option>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="alert alert-info">
@@ -232,7 +233,7 @@
             </div>
         </div>
     </div>
-@stop
+<?php $__env->stopSection(); ?>
 
 <script>
 function aplicarTemplate() {
@@ -248,3 +249,4 @@ function aplicarTemplate() {
     form.submit();
 }
 </script>
+<?php echo $__env->make('adminlte::page', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\escaleno\Programacao\base_orcamentos_escaleno\resources\views/projetos/show.blade.php ENDPATH**/ ?>

@@ -1,10 +1,10 @@
 @extends('adminlte::page')
 
-@section('title', 'Detalhes da Subatividade')
+@section('title', 'Detalhes da Actividade')
 
 @section('content_header')
 <div class="d-flex justify-content-between align-items-center">
-    <h1><i class="fas fa-info-circle mr-2"></i>Detalhes da Subatividade</h1>
+    <h1><i class="fas fa-info-circle mr-2"></i>Detalhes da Actividade</h1>
     <div>
         <a href="{{ route('subatividades.edit', $subatividade->id) }}" class="btn btn-warning">
             <i class="fas fa-edit mr-1"></i> Editar
@@ -27,22 +27,24 @@
             </div>
             <div class="card-body">
                 <table class="table table-bordered">
+                    
                     <tr>
-                        <th width="150">Código:</th>
-                        <td><span class="badge bg-primary">{{ $subatividade->codigo }}</span></td>
-                    </tr>
-                    <tr>
-                        <th>Nome:</th>
-                        <td>{{ $subatividade->nome }}</td>
-                    </tr>
-                    <tr>
-                        <th>Atividade:</th>
+                        <th>Capítulo:</th>
                         <td>
                             <a href="{{ route('atividades.show', $subatividade->atividade_id) }}">
                                 {{ $subatividade->atividade->categoriaObra->codigo }}.{{ $subatividade->atividade->codigo }} - {{ $subatividade->atividade->nome }}
                             </a>
                         </td>
                     </tr>
+                    <tr>
+                        <th width="150">Código:</th>
+                        <td><span class="badge bg-primary">{{ $subatividade->codigo }}</span></td>
+                    </tr>
+                    <tr>
+                        <th>Nome da actividade:</th>
+                        <td>{{ $subatividade->nome }}</td>
+                    </tr>
+                    
                     <tr>
                         <th>Unidade:</th>
                         <td>{{ $subatividade->unidade }}</td>

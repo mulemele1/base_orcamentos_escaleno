@@ -1,7 +1,5 @@
 
 
-<?php $__env->startSection('title', 'Selecionar Categoria'); ?>
-
 <?php $__env->startSection('content_header'); ?>
 <?php $__env->stopSection(); ?>
 
@@ -290,8 +288,8 @@
 <!-- Page Header -->
 <div class="page-header">
     <div class="page-header-left">
-        <h1><i class="fas fa-folder-open mr-2" style="font-size:1.4rem; opacity:.7;"></i>Itens de Orçamento</h1>
-        <p>Selecione uma categoria para visualizar ou gerir os seus itens</p>
+        <h1><i class="fas fa-folder-open mr-2" style="font-size:1.4rem; opacity:.7;"></i>Módulos de Medição</h1>
+        <p>Selecione o módulo de medicao para visualizar ou gerir os seus itens</p>
     </div>
     <a href="<?php echo e(url('/home')); ?>" class="btn-back">
         <i class="fas fa-arrow-left"></i> Voltar
@@ -301,7 +299,7 @@
 <!-- Section Header -->
 <div class="section-header">
     <h2 class="section-title">
-        <i class="fas fa-th-large"></i> Categorias de Obra
+        <i class="fas fa-th-large"></i> Módulos de Obra
     </h2>
     <span class="section-count"><?php echo e($categorias->count()); ?> <?php echo e($categorias->count() == 1 ? 'categoria' : 'categorias'); ?></span>
 </div>
@@ -328,10 +326,10 @@
 <?php else: ?>
 <div class="empty-wrap">
     <div class="empty-icon"><i class="fas fa-folder-open"></i></div>
-    <h4>Nenhuma categoria encontrada</h4>
-    <p>Crie uma categoria de obra para começar a adicionar itens de orçamento.</p>
+    <h4>Nenhum módulo encontrado</h4>
+    <p>Crie um módulo de obra para começar a adicionar itens de orçamento.</p>
     <a href="<?php echo e(route('categorias-obra.create')); ?>" class="btn-empty">
-        <i class="fas fa-plus"></i> Criar Categoria
+        <i class="fas fa-plus"></i> Criar Novo Módulo
     </a>
 </div>
 <?php endif; ?>

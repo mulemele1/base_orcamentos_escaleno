@@ -87,7 +87,7 @@ unset($__errorArgs, $__bag); ?>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="categoria_obra_id">Categoria <span class="text-danger">*</span></label>
+                                <label for="categoria_obra_id">Módulo <span class="text-danger">*</span></label>
                                 <select class="form-control <?php $__errorArgs = ['categoria_obra_id'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :

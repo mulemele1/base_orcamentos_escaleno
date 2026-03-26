@@ -1,6 +1,6 @@
 
 
-<?php $__env->startSection('title', 'Categorias de Obra'); ?>
+<?php $__env->startSection('title', 'Módulos de Obra'); ?>
 
 <?php $__env->startSection('content_header'); ?>
 <?php $__env->stopSection(); ?>
@@ -442,15 +442,15 @@
 <!-- Page Header -->
 <div class="page-header">
     <div class="page-header-left">
-        <h1><i class="fas fa-folder-open mr-2" style="font-size:1.4rem; opacity:.7;"></i>Categorias de Obra</h1>
-        <p>Gerenciamento de categorias e estrutura de obras</p>
+        <h1><i class="fas fa-folder-open mr-2" style="font-size:1.4rem; opacity:.7;"></i>Módulos de Obra</h1>
+        <p>Gerenciamento de Módulos e estrutura de obras</p>
     </div>
     <div class="page-header-right">
         <a href="<?php echo e(url('/home')); ?>" class="btn-header btn-header-ghost">
             <i class="fas fa-arrow-left"></i> Voltar
         </a>
         <a href="<?php echo e(route('categorias-obra.create')); ?>" class="btn-header btn-header-primary">
-            <i class="fas fa-plus"></i> Nova Categoria
+            <i class="fas fa-plus"></i> Novo Módulo
         </a>
     </div>
 </div>
@@ -485,7 +485,7 @@
 <div class="table-card">
     <div class="table-card-header">
         <h3 class="table-card-title">
-            <i class="fas fa-folder"></i> Lista de Categorias
+            <i class="fas fa-folder"></i> Lista de Módulo
         </h3>
         <span class="table-count">
             <?php if($categorias->total() > 0): ?>
@@ -542,10 +542,10 @@
                     <td colspan="6">
                         <div class="empty-state">
                             <div class="empty-state-icon"><i class="fas fa-folder-open"></i></div>
-                            <h4>Nenhuma categoria encontrada</h4>
-                            <p>Tente ajustar o filtro ou cadastre uma nova categoria.</p>
+                            <h4>Nenhum Módulo encontrada</h4>
+                            <p>Tente ajustar o filtro ou cadastre um novo Módulo.</p>
                             <a href="<?php echo e(route('categorias-obra.create')); ?>" class="btn-empty">
-                                <i class="fas fa-plus"></i> Nova Categoria
+                                <i class="fas fa-plus"></i> Novo Módulo
                             </a>
                         </div>
                     </td>

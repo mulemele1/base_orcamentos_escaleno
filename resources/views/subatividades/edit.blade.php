@@ -1,10 +1,10 @@
 @extends('adminlte::page')
 
-@section('title', 'Editar Subatividade')
+@section('title', 'Editar Actividade')
 
 @section('content_header')
 <div class="d-flex justify-content-between align-items-center">
-    <h1><i class="fas fa-edit mr-2"></i>Editar Subatividade</h1>
+    <h1><i class="fas fa-edit mr-2"></i>Editar Actividade</h1>
     <a href="{{ route('subatividades.index', ['atividade_id' => $subatividade->atividade_id]) }}" class="btn btn-secondary">
         <i class="fas fa-arrow-left mr-1"></i> Voltar
     </a>
@@ -27,7 +27,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="atividade_id">Atividade <span class="text-danger">*</span></label>
+                                <label for="atividade_id">Capítulo <span class="text-danger">*</span></label>
                                 <select class="form-control @error('atividade_id') is-invalid @enderror" 
                                         id="atividade_id" 
                                         name="atividade_id" 
@@ -65,7 +65,7 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="nome">Nome <span class="text-danger">*</span></label>
+                                <label for="nome">Nome da actividade <span class="text-danger">*</span></label>
                                 <input type="text" 
                                        class="form-control @error('nome') is-invalid @enderror" 
                                        id="nome" 
@@ -255,7 +255,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="descricao">Descrição Detalhada</label>
+                        <label for="descricao">Descrição Detalhada Actividade</label>
                         <textarea class="form-control @error('descricao') is-invalid @enderror" 
                                   id="descricao" 
                                   name="descricao" 

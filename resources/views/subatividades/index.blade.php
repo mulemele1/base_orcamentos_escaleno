@@ -1,12 +1,12 @@
 @extends('adminlte::page')
 
-@section('title', 'Subatividades')
+@section('title', 'Actividades')
 
 @section('content_header')
 <div class="d-flex justify-content-between align-items-center">
-    <h1><i class="fas fa-list-alt mr-2"></i>Subatividades</h1>
+    <h1><i class="fas fa-list-alt mr-2"></i>Actividades</h1>
     <a href="{{ route('subatividades.create', ['atividade_id' => request('atividade_id')]) }}" class="btn btn-success">
-        <i class="fas fa-plus mr-1"></i> Nova Subatividade
+        <i class="fas fa-plus mr-1"></i> Nova Actividade
     </a>
 </div>
 @stop
@@ -21,10 +21,10 @@
                         <h3 class="card-title">
                             @if(request('atividade_id') && isset($atividadeSelecionada))
                                 <span class="badge bg-info">
-                                    Atividade: {{ $atividadeSelecionada->categoriaObra->codigo }}.{{ $atividadeSelecionada->codigo }} - {{ $atividadeSelecionada->nome }}
+                                    Actividade: {{ $atividadeSelecionada->categoriaObra->codigo }}.{{ $atividadeSelecionada->codigo }} - {{ $atividadeSelecionada->nome }}
                                 </span>
                             @else
-                                Lista de Subatividades
+                                Lista de Actividades
                             @endif
                         </h3>
                     </div>
@@ -57,11 +57,6 @@
                             <th width="80">Código</th>
                             <th>Nome</th>
                             <th width="80">Unidade</th>
-                            <th width="60">NPI</th>
-                            <th width="120">Dimensões (C x L x H)</th>
-                            <th width="100">Elementar</th>
-                            <th width="100">Parcial</th>
-                            <th width="80">Perda %</th>
                             <th width="120">Quant. Proposta</th>
                             <th width="220">Ações</th>
                         </thead>
@@ -71,19 +66,7 @@
                             <td><span class="badge bg-primary">{{ $sub->codigo }}</span></td>
                             <td>{{ Str::limit($sub->nome, 50) }}</td>
                             <td>{{ $sub->unidade }}</td>
-                            <td class="text-center">{{ $sub->npi }}</td>
-                            <td class="text-center">
-                                @if($sub->comprimento)
-                                    {{ number_format($sub->comprimento, 2) }} 
-                                    @if($sub->largura) x {{ number_format($sub->largura, 2) }} @endif
-                                    @if($sub->altura) x {{ number_format($sub->altura, 2) }} @endif
-                                @else
-                                    -
-                                @endif
-                            </td>
-                            <td class="text-right">{{ number_format($sub->elementar, 2, ',', '.') }}</td>
-                            <td class="text-right">{{ number_format($sub->parcial, 2, ',', '.') }}</td>
-                            <td class="text-center">{{ $sub->perda_percentual }}%</td>
+                            
                             <td class="text-right"><strong>{{ number_format($sub->quantidade_proposta, 2, ',', '.') }}</strong></td>
                             <td>
                                 <div class="btn-group">

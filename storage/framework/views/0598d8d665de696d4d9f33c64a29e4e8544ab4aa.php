@@ -1,11 +1,11 @@
-@extends('adminlte::page')
 
-@section('title', 'Módulo de Medição - ' . $categoria->nome)
 
-@section('content_header')
-@endsection
+<?php $__env->startSection('title', 'Módulo de Medição - ' . $categoria->nome); ?>
 
-@section('content')
+<?php $__env->startSection('content_header'); ?>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700;800&family=Roboto:wght@300;400;500;600&display=swap');
 
@@ -453,18 +453,19 @@
 <div class="page-header">
     <div class="page-header-left">
         <h1>
-            <i class="fas fa-list mr-2" style="font-size:1.3rem; opacity:.7;"></i>{{ $categoria->nome }}
+            <i class="fas fa-list mr-2" style="font-size:1.3rem; opacity:.7;"></i><?php echo e($categoria->nome); ?>
+
         </h1>
         <p>Módulo de Medição desta categoria</p>
     </div>
     <div class="page-header-right">
-        <a href="{{ route('itens-orcamento.list') }}" class="btn-header btn-header-ghost">
+        <a href="<?php echo e(route('itens-orcamento.list')); ?>" class="btn-header btn-header-ghost">
             <i class="fas fa-arrow-left"></i> Categorias
         </a>
-        <a href="{{ route('itens-orcamento.export', $categoria->id) }}" class="btn-header btn-header-success">
+        <a href="<?php echo e(route('itens-orcamento.export', $categoria->id)); ?>" class="btn-header btn-header-success">
             <i class="fas fa-file-excel"></i> Exportar
         </a>
-        <a href="{{ route('itens-orcamento.create', ['categoria_id' => $categoria->id]) }}" class="btn-header btn-header-primary">
+        <a href="<?php echo e(route('itens-orcamento.create', ['categoria_id' => $categoria->id])); ?>" class="btn-header btn-header-primary">
             <i class="fas fa-plus"></i> Novo Item
         </a>
     </div>
@@ -475,14 +476,14 @@
     <div class="summary-card">
         <div class="summary-icon blue"><i class="fas fa-layer-group"></i></div>
         <div>
-            <div class="summary-value">{{ $itens->total() }}</div>
+            <div class="summary-value"><?php echo e($itens->total()); ?></div>
             <div class="summary-label">Total de Itens</div>
         </div>
     </div>
     <div class="summary-card">
         <div class="summary-icon green"><i class="fas fa-coins"></i></div>
         <div>
-            <div class="summary-value green">MT {{ number_format($subtotal, 2, ',', '.') }}</div>
+            <div class="summary-value green">MT <?php echo e(number_format($subtotal, 2, ',', '.')); ?></div>
             <div class="summary-label">Subtotal da Categoria</div>
         </div>
     </div>
@@ -490,28 +491,28 @@
 
 <!-- Filter Panel -->
 <div class="filter-panel">
-    <form method="GET" action="{{ route('itens-orcamento.list', ['categoria_id' => $categoria->id]) }}">
+    <form method="GET" action="<?php echo e(route('itens-orcamento.list', ['categoria_id' => $categoria->id])); ?>">
         <div class="row" style="margin: 0 -8px; align-items: flex-end;">
             <div class="col-md-5" style="padding: 0 8px;">
                 <label class="filter-label"><i class="fas fa-search mr-1"></i>Pesquisar</label>
                 <input type="text" class="filter-control" name="search"
                        placeholder="Item, descrição ou comentários..."
-                       value="{{ request('search') }}">
+                       value="<?php echo e(request('search')); ?>">
             </div>
             <div class="col-md-3" style="padding: 0 8px;">
                 <label class="filter-label"><i class="fas fa-sort mr-1"></i>Ordenar por</label>
                 <select class="filter-control" name="ordenar_por">
-                    <option value="item"       {{ request('ordenar_por') == 'item'       ? 'selected' : '' }}>Item</option>
-                    <option value="descricao"  {{ request('ordenar_por') == 'descricao'  ? 'selected' : '' }}>Descrição</option>
-                    <option value="total"      {{ request('ordenar_por') == 'total'      ? 'selected' : '' }}>Total</option>
-                    <option value="created_at" {{ request('ordenar_por') == 'created_at' ? 'selected' : '' }}>Data de Criação</option>
+                    <option value="item"       <?php echo e(request('ordenar_por') == 'item'       ? 'selected' : ''); ?>>Item</option>
+                    <option value="descricao"  <?php echo e(request('ordenar_por') == 'descricao'  ? 'selected' : ''); ?>>Descrição</option>
+                    <option value="total"      <?php echo e(request('ordenar_por') == 'total'      ? 'selected' : ''); ?>>Total</option>
+                    <option value="created_at" <?php echo e(request('ordenar_por') == 'created_at' ? 'selected' : ''); ?>>Data de Criação</option>
                 </select>
             </div>
             <div class="col-md-2" style="padding: 0 8px;">
                 <label class="filter-label"><i class="fas fa-arrows-alt-v mr-1"></i>Direção</label>
                 <select class="filter-control" name="ordenar_dir">
-                    <option value="asc"  {{ request('ordenar_dir') == 'asc'  ? 'selected' : '' }}>Crescente</option>
-                    <option value="desc" {{ request('ordenar_dir') == 'desc' ? 'selected' : '' }}>Decrescente</option>
+                    <option value="asc"  <?php echo e(request('ordenar_dir') == 'asc'  ? 'selected' : ''); ?>>Crescente</option>
+                    <option value="desc" <?php echo e(request('ordenar_dir') == 'desc' ? 'selected' : ''); ?>>Decrescente</option>
                 </select>
             </div>
             <div class="col-md-2" style="padding: 0 8px;">
@@ -522,7 +523,7 @@
             </div>
         </div>
         <div style="margin-top: 10px;">
-            <a href="{{ route('itens-orcamento.list', ['categoria_id' => $categoria->id]) }}" class="btn-clear">
+            <a href="<?php echo e(route('itens-orcamento.list', ['categoria_id' => $categoria->id])); ?>" class="btn-clear">
                 <i class="fas fa-times"></i> Limpar Filtros
             </a>
         </div>
@@ -536,11 +537,12 @@
             <i class="fas fa-table"></i> Módulo de Medição
         </h3>
         <span class="table-count">
-            @if($itens->total() > 0)
-                {{ $itens->firstItem() }}–{{ $itens->lastItem() }} de {{ $itens->total() }}
-            @else
+            <?php if($itens->total() > 0): ?>
+                <?php echo e($itens->firstItem()); ?>–<?php echo e($itens->lastItem()); ?> de <?php echo e($itens->total()); ?>
+
+            <?php else: ?>
                 0 registros
-            @endif
+            <?php endif; ?>
         </span>
     </div>
 
@@ -565,82 +567,84 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse ($itens as $item)
+                <?php $__empty_1 = true; $__currentLoopData = $itens; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                 <tr>
-                    <td><span class="chip-item">{{ $item->item }}</span></td>
-                    <td><span class="mat-desc">{{ $item->descricao }}</span></td>
-                    <td><span class="chip-unit">{{ $item->unidade }}</span></td>
-                    <td class="val-num">{{ $item->npi ?? '—' }}</td>
+                    <td><span class="chip-item"><?php echo e($item->item); ?></span></td>
+                    <td><span class="mat-desc"><?php echo e($item->descricao); ?></span></td>
+                    <td><span class="chip-unit"><?php echo e($item->unidade); ?></span></td>
+                    <td class="val-num"><?php echo e($item->npi ?? '—'); ?></td>
                     <td class="dim-cell">
-                        @if($item->comprimento || $item->largura || $item->altura)
-                            {{ $item->comprimento ?? '—' }} × {{ $item->largura ?? '—' }} × {{ $item->altura ?? '—' }}
-                        @else
+                        <?php if($item->comprimento || $item->largura || $item->altura): ?>
+                            <?php echo e($item->comprimento ?? '—'); ?> × <?php echo e($item->largura ?? '—'); ?> × <?php echo e($item->altura ?? '—'); ?>
+
+                        <?php else: ?>
                             —
-                        @endif
+                        <?php endif; ?>
                     </td>
-                    <td class="val-num">{{ $item->elementar ? number_format($item->elementar, 2, ',', '.') : '—' }}</td>
-                    <td class="val-num">{{ $item->parcial ? number_format($item->parcial, 2, ',', '.') : '—' }}</td>
-                    <td class="val-num">{{ $item->perdas != 1 ? $item->perdas : '—' }}</td>
-                    <td class="val-num">{{ number_format($item->quantidade_proposta, 2, ',', '.') }}</td>
-                    <td class="val-num">{{ $item->custo_fornecimento ? 'MT '.number_format($item->custo_fornecimento, 2, ',', '.') : '—' }}</td>
-                    <td class="val-num">{{ $item->custo_mao_obra ? 'MT '.number_format($item->custo_mao_obra, 2, ',', '.') : '—' }}</td>
-                    <td class="val-num">MT {{ number_format($item->preco_unitario, 2, ',', '.') }}</td>
-                    <td><span class="val-total">MT {{ number_format($item->total, 2, ',', '.') }}</span></td>
+                    <td class="val-num"><?php echo e($item->elementar ? number_format($item->elementar, 2, ',', '.') : '—'); ?></td>
+                    <td class="val-num"><?php echo e($item->parcial ? number_format($item->parcial, 2, ',', '.') : '—'); ?></td>
+                    <td class="val-num"><?php echo e($item->perdas != 1 ? $item->perdas : '—'); ?></td>
+                    <td class="val-num"><?php echo e(number_format($item->quantidade_proposta, 2, ',', '.')); ?></td>
+                    <td class="val-num"><?php echo e($item->custo_fornecimento ? 'MT '.number_format($item->custo_fornecimento, 2, ',', '.') : '—'); ?></td>
+                    <td class="val-num"><?php echo e($item->custo_mao_obra ? 'MT '.number_format($item->custo_mao_obra, 2, ',', '.') : '—'); ?></td>
+                    <td class="val-num">MT <?php echo e(number_format($item->preco_unitario, 2, ',', '.')); ?></td>
+                    <td><span class="val-total">MT <?php echo e(number_format($item->total, 2, ',', '.')); ?></span></td>
                     <td>
                         <div class="action-group">
-                            <a href="{{ route('itens-orcamento.edit', $item->id) }}"
+                            <a href="<?php echo e(route('itens-orcamento.edit', $item->id)); ?>"
                                class="btn-icon btn-icon-edit" title="Editar">
                                 <i class="fas fa-pencil-alt"></i>
                             </a>
-                            <a href="{{ route('itens-orcamento.duplicate', $item->id) }}"
+                            <a href="<?php echo e(route('itens-orcamento.duplicate', $item->id)); ?>"
                                class="btn-icon btn-icon-dup" title="Duplicar"
                                onclick="return confirm('Duplicar este item?')">
                                 <i class="fas fa-copy"></i>
                             </a>
-                            <a href="{{ route('pdf.item', $item->id) }}"
+                            <a href="<?php echo e(route('pdf.item', $item->id)); ?>"
                                target="_blank"
                                class="btn-icon btn-icon-pdf" title="PDF do Item">
                                 <i class="fas fa-file-pdf"></i>
                             </a>
                             <button type="button"
                                     class="btn-icon btn-icon-del"
-                                    onclick="confirmDelete({{ $item->id }}, '{{ addslashes($item->item) }}')"
+                                    onclick="confirmDelete(<?php echo e($item->id); ?>, '<?php echo e(addslashes($item->item)); ?>')"
                                     title="Excluir">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
                     </td>
                 </tr>
-                @empty
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                 <tr>
                     <td colspan="14">
                         <div class="empty-state">
                             <div class="empty-state-icon"><i class="fas fa-inbox"></i></div>
                             <h4>Nenhum item encontrado</h4>
                             <p>Adicione o primeiro item nesta categoria de orçamento.</p>
-                            <a href="{{ route('itens-orcamento.create', ['categoria_id' => $categoria->id]) }}" class="btn-empty">
+                            <a href="<?php echo e(route('itens-orcamento.create', ['categoria_id' => $categoria->id])); ?>" class="btn-empty">
                                 <i class="fas fa-plus"></i> Novo Item
                             </a>
                         </div>
                     </td>
                 </tr>
-                @endforelse
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
 
-    @if($itens->hasPages())
+    <?php if($itens->hasPages()): ?>
     <div class="table-footer">
         <div class="pagination-info">
             <i class="fas fa-list mr-1"></i>
-            Exibindo <strong>{{ $itens->firstItem() }}</strong> a <strong>{{ $itens->lastItem() }}</strong>
-            de <strong>{{ $itens->total() }}</strong> registros
+            Exibindo <strong><?php echo e($itens->firstItem()); ?></strong> a <strong><?php echo e($itens->lastItem()); ?></strong>
+            de <strong><?php echo e($itens->total()); ?></strong> registros
         </div>
         <div>
-            {{ $itens->appends(request()->query())->links() }}
+            <?php echo e($itens->appends(request()->query())->links()); ?>
+
         </div>
     </div>
-    @endif
+    <?php endif; ?>
 </div>
 
 <!-- SweetAlert2 -->
@@ -668,7 +672,7 @@
 
                 const form = document.createElement('form');
                 form.method = 'POST';
-                form.action = '{{ route("itens-orcamento.destroy", "") }}/' + id;
+                form.action = '<?php echo e(route("itens-orcamento.destroy", "")); ?>/' + id;
 
                 const methodInput = document.createElement('input');
                 methodInput.type = 'hidden';
@@ -688,27 +692,28 @@
         });
     }
 
-    @if(session('success'))
+    <?php if(session('success')): ?>
         Swal.fire({
             icon: 'success',
             title: 'Sucesso!',
-            text: '{{ session('success') }}',
+            text: '<?php echo e(session('success')); ?>',
             showConfirmButton: false,
             timer: 3000,
             toast: true,
             position: 'top-end'
         });
-    @endif
+    <?php endif; ?>
 
-    @if(session('error'))
+    <?php if(session('error')): ?>
         Swal.fire({
             icon: 'error',
             title: 'Erro!',
-            text: '{{ session('error') }}',
+            text: '<?php echo e(session('error')); ?>',
             confirmButtonColor: '#dc2626'
         });
-    @endif
+    <?php endif; ?>
 </script>
 
-@include('layouts.datatable')
-@endsection
+<?php echo $__env->make('layouts.datatable', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('adminlte::page', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\escaleno\Programacao\base_orcamentos_escaleno\resources\views/itens-orcamento/list.blade.php ENDPATH**/ ?>

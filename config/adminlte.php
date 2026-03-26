@@ -258,12 +258,7 @@ return [
                 'url'  => 'clientes/list',
                 'can'  => 'is_admin',
             ],*/
-            [
-                'text' => 'Categorias',
-                'icon' => 'fas fa-fw fa-truck-loading',
-                'url'  => 'categorias-obra/list',
-                'can'  => 'is_admin',
-            ],
+            
             [
                 'text' => 'Fornecedores',
                 'icon' => 'fas fa-fw fa-user-secret',
@@ -312,31 +307,48 @@ return [
     ],
 
     // ============================================
-    // ORÇAMENTOS E OPERAÇÕES
+    // MÓDULO DE MEDIÇÃO
+    // ============================================
+    [
+        'text' => 'MEDIÇÃO',
+        'icon' => 'fas fa-fw fa-calculator',
+        'can'  => 'is_user',
+        'submenu' => [
+            /*[
+                'text' => 'Módulo de Medição',
+                'icon' => 'fas fa-fw fa-file-invoice-dollar',
+                'url'  => 'itens-orcamento/list',
+                'can'  => 'is_admin',
+            ],*/
+            [
+                'text' => 'Modulos',
+                'icon' => 'fas fa-fw fa-truck-loading',
+                'url'  => 'categorias-obra/list',
+                'can'  => 'is_admin',
+            ],
+            [
+                'text' => 'Capitulos',
+                'icon' => 'fas fa-fw fa-clipboard-list',
+                'url'  => 'atividades/list',
+                'can'  => 'is_admin',
+            ],
+            [
+                'text' => 'Actividades',
+                'icon' => 'fas fa-fw fa-list-ul',
+                'url'  => 'subatividades/list',
+                'can'  => 'is_user',
+            ],
+            
+        ],
+    ],
+    // ============================================
+    // ORÇAMENTOS
     // ============================================
     [
         'text' => 'ORÇAMENTOS',
         'icon' => 'fas fa-fw fa-calculator',
         'can'  => 'is_user',
         'submenu' => [
-            [
-                'text' => 'Itens do Orçamento',
-                'icon' => 'fas fa-fw fa-file-invoice-dollar',
-                'url'  => 'itens-orcamento/list',
-                'can'  => 'is_admin',
-            ],
-            [
-                'text' => 'Atividades',
-                'icon' => 'fas fa-fw fa-clipboard-list',
-                'url'  => 'atividades/list',
-                'can'  => 'is_admin',
-            ],
-            [
-                'text' => 'Subatividades',
-                'icon' => 'fas fa-fw fa-list-ul',
-                'url'  => 'subatividades/list',
-                'can'  => 'is_user',
-            ],
             [
                 'text' => 'Composição de Custos',
                 'icon' => 'fas fa-fw fa-cogs',
@@ -349,12 +361,7 @@ return [
                 'url'  => 'orcamentos',
                 'can'  => 'is_admin',
             ],
-            /*[
-                'text' => 'Resumo',
-                'icon' => 'fas fa-fw fa-chart-simple',
-                'url'  => 'summary',
-                'can'  => 'is_admin',
-            ],*/
+            
         ],
     ],
 
