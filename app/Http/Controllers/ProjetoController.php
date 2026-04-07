@@ -1,11 +1,12 @@
 <?php
+// app/Http/Controllers/ProjetoController.php
 
 namespace App\Http\Controllers;
 
 use App\Models\Projeto;
-use App\Models\TemplateOrcamento;
+use App\Models\Componente;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ProjetoController extends Controller
 {
@@ -13,215 +14,171 @@ class ProjetoController extends Controller
     {
         $this->middleware('auth');
     }
-
+    
     /**
-     * Listar todos os projetos
+     * Lista todos os projetos do usuário
      */
-    public function index(Request $request)
+    public function index()
     {
-        $query = Projeto::with(['user'])->orderBy('created_at', 'desc');
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('nome', 'like', "%{$search}%")
-                  ->orWhere('cliente', 'like', "%{$search}%")
-                  ->orWhere('localizacao', 'like', "%{$search}%");
-            });
-        }
-
-        $projetos = $query->paginate(15);
-        $statuses = ['planeamento', 'em_andamento', 'concluido', 'suspenso'];
-
-        return view('projetos.index', compact('projetos', 'statuses'));
+        $projetos = Projeto::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+            
+        return view('projetos.index', compact('projetos'));
     }
-
+    
     /**
      * Formulário para criar novo projeto
      */
     public function create()
     {
-        $templates = TemplateOrcamento::where('user_id', auth()->id())
-            ->orWhere('publico', true)
-            ->orderBy('nome')
-            ->get();
-
-        return view('projetos.create', compact('templates'));
+        return view('projetos.create');
     }
-
+    
     /**
      * Salvar novo projeto
      */
     public function store(Request $request)
     {
-        // Validar dados
         $validated = $request->validate([
             'nome' => 'required|string|max:255',
-            'cliente' => 'required|string|max:255',
-            'localizacao' => 'required|string|max:255',
+            'cliente' => 'nullable|string|max:255',
+            'localizacao' => 'nullable|string|max:255',
+            'descricao' => 'nullable|string',
             'data_inicio' => 'nullable|date',
             'data_fim' => 'nullable|date|after_or_equal:data_inicio',
-            'template_id' => 'nullable|exists:template_orcamentos,id',
             'iva' => 'nullable|numeric|min:0|max:100',
             'contingencia' => 'nullable|numeric|min:0|max:100',
         ]);
-
-        DB::beginTransaction();
-        try {
-            // Criar projeto
-            $projeto = Projeto::create([
-                'nome' => $validated['nome'],
-                'cliente' => $validated['cliente'],
-                'localizacao' => $validated['localizacao'],
-                'data_inicio' => $validated['data_inicio'] ?? null,
-                'data_fim' => $validated['data_fim'] ?? null,
-                'status' => 'planeamento',
-                'template_id' => $validated['template_id'] ?? null,
-                'configuracoes' => [
-                    'iva' => $validated['iva'] ?? 16,
-                    'contingencia' => $validated['contingencia'] ?? 8,
-                ],
-                'user_id' => auth()->id(),
-            ]);
-
-            // Criar primeiro orçamento
-            $orcamento = $projeto->criarPrimeiroOrcamento([
-                'iva_percentual' => $validated['iva'] ?? 16,
-                'contingencia_percentual' => $validated['contingencia'] ?? 8,
-            ]);
-
-            // Se tiver template, aplicar a estrutura
-            if (!empty($validated['template_id'])) {
-                $template = TemplateOrcamento::find($validated['template_id']);
-                if ($template && $template->estrutura) {
-                    $orcamento = $template->criarOrcamento($projeto, [
-                        'iva_percentual' => $validated['iva'] ?? 16,
-                        'contingencia_percentual' => $validated['contingencia'] ?? 8,
-                    ]);
-                }
-            }
-
-            DB::commit();
-
-            return redirect()->route('projetos.show', $projeto->id)
-                ->with('success', 'Projeto criado com sucesso!');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            \Log::error('Erro ao criar projeto: ' . $e->getMessage());
-            return redirect()->back()
-                ->with('error', 'Erro ao criar projeto: ' . $e->getMessage())
-                ->withInput();
-        }
+        
+        $validated['user_id'] = Auth::id();
+        $validated['status'] = 'rascunho';
+        $validated['iva'] = $validated['iva'] ?? 16;
+        $validated['contingencia'] = $validated['contingencia'] ?? 8;
+        
+        $projeto = Projeto::create($validated);
+        
+        return redirect()->route('projetos.show', $projeto->id)
+            ->with('success', 'Projeto criado com sucesso!');
     }
-
+    
     /**
      * Visualizar detalhes do projeto
      */
     public function show($id)
     {
-        $projeto = Projeto::with(['user', 'orcamentos' => function($q) {
-            $q->orderBy('versao', 'desc');
-        }])->findOrFail($id);
-
-        $orcamentoAtivo = $projeto->orcamento_ativo;
+        $projeto = Projeto::with(['medicoes.componente', 'orcamentos'])->findOrFail($id);
         
-        // Carregar templates disponíveis para aplicar
-        $templates = TemplateOrcamento::where(function($q) {
-            $q->where('user_id', auth()->id())
-              ->orWhere('publico', true);
-        })->orderBy('nome')->get();
-
-        return view('projetos.show', compact('projeto', 'orcamentoAtivo', 'templates'));
+        // Verificar autorização
+        if ($projeto->user_id !== Auth::id()) {
+            abort(403, 'Acesso não autorizado.');
+        }
+        
+        // Carregar medições do projeto
+        $medicoes = $projeto->medicoes()->with('componente')->get();
+        
+        // Calcular progresso
+        $totalComponentes = Componente::count();
+        $componentesMedidos = $medicoes->unique('componente_id')->count();
+        $progresso = $totalComponentes > 0 ? round(($componentesMedidos / $totalComponentes) * 100) : 0;
+        
+        return view('projetos.show', compact('projeto', 'medicoes', 'progresso', 'componentesMedidos', 'totalComponentes'));
     }
-
+    
     /**
      * Formulário para editar projeto
      */
     public function edit($id)
     {
         $projeto = Projeto::findOrFail($id);
-        $templates = TemplateOrcamento::where('user_id', auth()->id())
-            ->orWhere('publico', true)
-            ->orderBy('nome')
-            ->get();
-
-        return view('projetos.edit', compact('projeto', 'templates'));
+        
+        // Verificar autorização
+        if ($projeto->user_id !== Auth::id()) {
+            abort(403, 'Acesso não autorizado.');
+        }
+        
+        return view('projetos.edit', compact('projeto'));
     }
-
+    
     /**
      * Atualizar projeto
      */
     public function update(Request $request, $id)
     {
         $projeto = Projeto::findOrFail($id);
-
+        
+        // Verificar autorização
+        if ($projeto->user_id !== Auth::id()) {
+            abort(403, 'Acesso não autorizado.');
+        }
+        
         $validated = $request->validate([
             'nome' => 'required|string|max:255',
-            'cliente' => 'required|string|max:255',
-            'localizacao' => 'required|string|max:255',
+            'cliente' => 'nullable|string|max:255',
+            'localizacao' => 'nullable|string|max:255',
+            'descricao' => 'nullable|string',
             'data_inicio' => 'nullable|date',
             'data_fim' => 'nullable|date|after_or_equal:data_inicio',
-            'status' => 'required|in:planeamento,em_andamento,concluido,suspenso',
+            'status' => 'in:rascunho,medicao,orcamento,concluido',
+            'iva' => 'nullable|numeric|min:0|max:100',
+            'contingencia' => 'nullable|numeric|min:0|max:100',
         ]);
-
-        try {
-            $projeto->update($validated);
-
-            return redirect()->route('projetos.show', $projeto->id)
-                ->with('success', 'Projeto atualizado com sucesso!');
-
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Erro ao atualizar projeto: ' . $e->getMessage())
-                ->withInput();
-        }
+        
+        $projeto->update($validated);
+        
+        return redirect()->route('projetos.show', $projeto->id)
+            ->with('success', 'Projeto atualizado com sucesso!');
     }
-
+    
     /**
-     * Deletar projeto
+     * Excluir projeto
      */
     public function destroy($id)
     {
         $projeto = Projeto::findOrFail($id);
-
-        try {
-            $projeto->delete();
-
-            return redirect()->route('projetos.index')
-                ->with('success', 'Projeto removido com sucesso!');
-
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Erro ao remover projeto: ' . $e->getMessage());
+        
+        // Verificar autorização
+        if ($projeto->user_id !== Auth::id()) {
+            abort(403, 'Acesso não autorizado.');
         }
+        
+        // Verificar se há orçamentos
+        if ($projeto->orcamentos()->count() > 0) {
+            return redirect()->route('projetos.index')
+                ->with('error', 'Não é possível excluir um projeto que possui orçamentos.');
+        }
+        
+        $projeto->delete();
+        
+        return redirect()->route('projetos.index')
+            ->with('success', 'Projeto removido com sucesso!');
     }
-
+    
     /**
-     * Gerar nova versão do orçamento
+     * Duplicar projeto (criar nova versão)
      */
     public function novaVersao($id)
     {
         $projeto = Projeto::findOrFail($id);
-
-        try {
-            $novoOrcamento = $projeto->novaVersao();
-
-            if (!$novoOrcamento) {
-                return redirect()->back()
-                    ->with('error', 'Não foi possível criar nova versão. Crie um orçamento primeiro.');
-            }
-
-            return redirect()->route('orcamentos.edit', $novoOrcamento->id)
-                ->with('success', 'Nova versão do orçamento criada com sucesso!');
-
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Erro ao criar nova versão: ' . $e->getMessage());
+        
+        // Verificar autorização
+        if ($projeto->user_id !== Auth::id()) {
+            abort(403, 'Acesso não autorizado.');
         }
+        
+        $novoProjeto = $projeto->replicate();
+        $novoProjeto->nome = $projeto->nome . ' (Cópia ' . date('d/m/Y') . ')';
+        $novoProjeto->status = 'rascunho';
+        $novoProjeto->save();
+        
+        // Copiar medições
+        foreach ($projeto->medicoes as $medicao) {
+            $novaMedicao = $medicao->replicate();
+            $novaMedicao->projeto_id = $novoProjeto->id;
+            $novaMedicao->save();
+        }
+        
+        return redirect()->route('projetos.show', $novoProjeto->id)
+            ->with('success', 'Nova versão do projeto criada com sucesso!');
     }
 }

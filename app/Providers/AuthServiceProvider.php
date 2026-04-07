@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\User;
+use App\Models\Projeto;
+use App\Policies\ProjetoPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -14,48 +15,35 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        // Registrar a política do Projeto
+        Projeto::class => ProjetoPolicy::class,
     ];
 
     /**
      * Register any authentication / authorization services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        /**$this->registerPolicies();
+        $this->registerPolicies();
 
-        Gate::define('is_user', function($user){
-            return ($user->type == 'user' || $user->type == 'super' || $user->type == 'admin')
-                        ? true
-                        : false;
+        // Gate para verificar se é usuário comum
+        Gate::define('is_user', function ($user) {
+            return in_array($user->type, ['user', 'super', 'admin']);
         });
-        Gate::define('is_admin', function($user){
-            return ($user->type == 'admin' || $user->type == 'super')
-                        ? true
-                        : false;
-        });
-        Gate::define('is_super', function($user){
-            return ($user->type == 'super')
-                        ? true
-                        : false;
-        });*/
 
-        Gate ::define('is_user', function ($user) {
-        return ($user->type == 'user' || $user->type == 'super' || $user->type == 'admin')
-                        ? true
-                        : false;
+        // Gate para verificar se é administrador
+        Gate::define('is_admin', function ($user) {
+            return in_array($user->type, ['admin', 'super']);
         });
-        Gate ::define('is_admin', function ($user) {
-            return ($user->type == 'admin' || $user->type == 'super')
-                            ? true
-                            : false;
+
+        // Gate para verificar se é super usuário
+        Gate::define('is_super', function ($user) {
+            return $user->type === 'super';
         });
-        Gate ::define('is_super', function ($user) {
-            return ($user->type === 'super')
-                            ? true
-                            : false;
+        
+        // Gate para verificar se o usuário é o dono do projeto
+        Gate::define('is_owner', function ($user, $projeto) {
+            return $user->id === $projeto->user_id;
         });
     }
 }

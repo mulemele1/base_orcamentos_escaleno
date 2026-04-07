@@ -20,13 +20,6 @@
     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalSalvarTemplate">
         <i class="fas fa-save"></i> Salvar como Template
     </button>
-    <a href="{{ route('projetos.show', $orcamento->projeto_id) }}" class="btn btn-secondary">
-        <i class="fas fa-arrow-left"></i> Voltar ao Projeto
-    </a>
-
-     <a href="{{ route('orcamentos.edit', $orcamento->id) }}" class="btn btn-primary">
-                <i class="fas fa-edit"></i> Editar
-            </a>
             <a href="{{ route('projetos.show', $orcamento->projeto_id) }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Voltar ao Projeto
             </a>

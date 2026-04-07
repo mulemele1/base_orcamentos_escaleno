@@ -6,32 +6,34 @@ use Illuminate\Database\Eloquent\Model;
 
 class PrecoMaterial extends Model
 {
-    protected $table = 'precos_materiais';
+    use HasFactory;
     
-    protected $fillable = [
-        'material_id', 'fornecedor_id', 'preco', 
-        'unidade_compra', 'quantidade_compra', 
-        'data_cotacao', 'referencia', 'estado', 'observacoes'
-    ];
+    protected $fillable = ['codigo', 'nome', 'unidade', 'categoria_id', 'valor_atual', 'ativo'];
     
     protected $casts = [
-        'data_cotacao' => 'date',
-        'preco' => 'decimal:2'
+        'valor_atual' => 'decimal:2',
+        'ativo' => 'boolean'
     ];
     
-    public function material()
+    public function categoria()
     {
-        return $this->belongsTo(Material::class);
+        return $this->belongsTo(Capitulo::class, 'categoria_id');
     }
     
-    public function fornecedor()
+    public function historicos()
     {
-        return $this->belongsTo(Fornecedor::class);
+        return $this->hasMany(PrecoHistorico::class)->orderBy('data_inicio', 'desc');
     }
     
-    // Preço normalizado para unidade padrão
-    public function getPrecoUnitarioAttribute()
+    public function getPrecoVigenteAttribute()
     {
-        return $this->preco / $this->quantidade_compra;
+        $historico = $this->historicos()
+            ->where('data_inicio', '<=', now())
+            ->where(function($q) {
+                $q->whereNull('data_fim')->orWhere('data_fim', '>=', now());
+            })
+            ->first();
+            
+        return $historico ? $historico->valor : $this->valor_atual;
     }
 }

@@ -376,4 +376,4 @@ $(document).ready(function() {
     $('#npi, #comprimento, #largura, #altura, #perda_percentual').change(calcularValores);
 });
 </script>
-@stop
+@stop  
